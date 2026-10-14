@@ -127,16 +127,24 @@
     /* Left Gradient Sidebar */
     .sidebar {
       position: relative;
-      overflow: visible;
-      padding: 24px 20px 18px;
+      overflow: visible !important;
+      padding: 20px 18px 16px;
       display: flex;
       flex-direction: column;
-      gap: 15px;
+      gap: 12px;
       color: #ffffff;
       background: linear-gradient(165deg, #009cf5 0%, #0072d0 45%, #00569e 100%);
       border-inline-end: 1px solid rgba(255, 255, 255, 0.18);
       box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.1);
       text-align: center;
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
+    }
+
+    .sidebar::-webkit-scrollbar {
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
     }
 
     /* Dynamic Sheen over Sidebar */
@@ -625,7 +633,7 @@
       position: relative;
       z-index: 1;
       margin-top: auto;
-      padding-top: 14px;
+      padding-top: 10px;
       border-top: 1px solid rgba(255, 255, 255, 0.18);
       color: rgba(255, 255, 255, 0.85);
       font-size: 11px;
@@ -2072,22 +2080,7 @@
     }
 
     
-    /* Sidebar Scrolling & Setting Block */
-    .sidebar {
-      overflow-y: auto !important;
-      overflow-x: hidden !important;
-      scrollbar-width: thin;
-      scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
-    }
-
-    .sidebar::-webkit-scrollbar {
-      width: 4px;
-    }
-
-    .sidebar::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.25);
-      border-radius: 4px;
-    }
+    /* Sidebar Layout - No Scrollbar */
 
     .side-settings-block {
       display: flex;
