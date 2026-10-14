@@ -2,6 +2,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import express from "express";
 import chatRouter from "./routes/chat.route.js";
+import { pool } from "./db/pool.js";
 
 export const app = express();
 
@@ -13,8 +14,17 @@ app.disable("x-powered-by");
 app.use(express.json({ limit: "32kb" }));
 app.use(express.static(publicDir));
 
-app.get("/health", (_req, res) => {
-  res.json({ ok: true });
+app.get("/health", async (_req, res) => {
+  try {
+    await pool.query("SELECT 1");
+    res.json({ ok: true, db: "connected" });
+  } catch (err) {
+    res.status(503).json({
+      ok: false,
+      db: "disconnected",
+      error: (err as Error).message
+    });
+  }
 });
 
 app.use(chatRouter);

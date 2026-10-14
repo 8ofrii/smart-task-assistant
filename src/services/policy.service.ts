@@ -1,7 +1,7 @@
 import type { PolicyTopic } from "../types/index.js";
 import { normalizeArabic } from "../utils/arabic.js";
 
-export const POLICY: Record<Exclude<PolicyTopic, "unknown">, string> = {
+export const POLICY_AR: Record<Exclude<PolicyTopic, "unknown">, string> = {
   working_hours:
     "الدوام من الأحد إلى الخميس من 8:00 صباحًا حتى 4:00 عصرًا، والسبت دوام نصفي حتى 12:00 ظهرًا.",
 
@@ -21,17 +21,50 @@ export const POLICY: Record<Exclude<PolicyTopic, "unknown">, string> = {
     "تحديث حالة المهمة يوميًا قبل نهاية الدوام."
 };
 
+export const POLICY_EN: Record<Exclude<PolicyTopic, "unknown">, string> = {
+  working_hours:
+    "Working hours are Sunday through Thursday from 8:00 AM to 4:00 PM, and Saturday half-day until 12:00 PM.",
+
+  annual_leave:
+    "Annual leave must be requested at least 5 business days in advance and approved by the direct supervisor.",
+
+  sick_leave:
+    "Sick leave requires an official medical report within 2 days of return.",
+
+  remote_work:
+    "Remote work is allowed one day per week with supervisor approval.",
+
+  expenses:
+    "Expenses up to 500 SAR are approved by the supervisor; amounts above require manager approval.",
+
+  task_status_update:
+    "Task status must be updated daily before the end of the workday."
+};
+
+export const POLICY = POLICY_AR;
+
 export function detectPolicyTopic(question: string): PolicyTopic {
   const q = normalizeArabic(question);
+  const qEn = question.toLowerCase();
 
-  if (q.includes("مرض") && (q.includes("اجاز") || q.includes("عطله"))) {
+  if (
+    (q.includes("مرض") && (q.includes("اجاز") || q.includes("عطله"))) ||
+    qEn.includes("sick leave") ||
+    (qEn.includes("sick") && qEn.includes("leave")) ||
+    qEn.includes("medical report")
+  ) {
     return "sick_leave";
   }
 
   if (
     q.includes("اجاز") ||
     q.includes("عطله") ||
-    q.includes("طلب اجازه")
+    q.includes("طلب اجازه") ||
+    qEn.includes("annual leave") ||
+    qEn.includes("vacation") ||
+    qEn.includes("days before leave") ||
+    qEn.includes("request leave") ||
+    (qEn.includes("days") && qEn.includes("leave"))
   ) {
     return "annual_leave";
   }
@@ -41,7 +74,12 @@ export function detectPolicyTopic(question: string): PolicyTopic {
     q.includes("ساعات العمل") ||
     q.includes("مواعيد العمل") ||
     q.includes("السبت") ||
-    q.includes("الخميس")
+    q.includes("الخميس") ||
+    qEn.includes("working hours") ||
+    qEn.includes("work hours") ||
+    qEn.includes("office hours") ||
+    qEn.includes("hours of work") ||
+    qEn.includes("shift")
   ) {
     return "working_hours";
   }
@@ -49,7 +87,11 @@ export function detectPolicyTopic(question: string): PolicyTopic {
   if (
     q.includes("عن بعد") ||
     q.includes("ريموت") ||
-    q.includes("من البيت")
+    q.includes("من البيت") ||
+    qEn.includes("remote work") ||
+    qEn.includes("remote") ||
+    qEn.includes("work from home") ||
+    qEn.includes("wfh")
   ) {
     return "remote_work";
   }
@@ -57,7 +99,10 @@ export function detectPolicyTopic(question: string): PolicyTopic {
   if (
     q.includes("مصروف") ||
     q.includes("نفقات") ||
-    q.includes("500")
+    q.includes("500") ||
+    qEn.includes("expense") ||
+    qEn.includes("expenses") ||
+    (qEn.includes("allowance") && qEn.includes("500"))
   ) {
     return "expenses";
   }
@@ -65,7 +110,9 @@ export function detectPolicyTopic(question: string): PolicyTopic {
   if (
     q.includes("حاله المهمه") ||
     q.includes("تحديث المهمه") ||
-    q.includes("تحديث حالة")
+    q.includes("تحديث حالة") ||
+    qEn.includes("task status") ||
+    qEn.includes("update task")
   ) {
     return "task_status_update";
   }
@@ -75,7 +122,8 @@ export function detectPolicyTopic(question: string): PolicyTopic {
 
 export function answerPolicyQuestion(
   question: string,
-  suggestedTopic?: PolicyTopic | null
+  suggestedTopic?: PolicyTopic | null,
+  lang: "ar" | "en" = "ar"
 ): string {
   const deterministicTopic = detectPolicyTopic(question);
 
@@ -85,8 +133,10 @@ export function answerPolicyQuestion(
       : suggestedTopic || "unknown";
 
   if (topic === "unknown") {
-    return "المعلومة غير متوفرة في السياسة.";
+    return lang === "en"
+      ? "This information is not available in the company policy."
+      : "المعلومة غير متوفرة في السياسة.";
   }
 
-  return POLICY[topic];
+  return lang === "en" ? POLICY_EN[topic] : POLICY_AR[topic];
 }

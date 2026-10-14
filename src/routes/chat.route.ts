@@ -19,16 +19,28 @@ const router = Router();
 
 const ChatBodySchema = z.object({
   user_id: z.number().int().positive(),
-  message: z.string().trim().min(1).max(2000)
+  message: z.string().trim().min(1).max(2000),
+  lang: z.enum(["ar", "en"]).optional().default("ar")
 });
 
 function ambiguousEmployeeReply(
   name: string,
-  employees: Array<{ department: string }>
+  employees: Array<{ department: string }>,
+  lang: "ar" | "en" = "ar"
 ): string {
   const departments = [
     ...new Set(employees.map((employee) => employee.department))
   ];
+
+  if (lang === "en") {
+    const enDepts = departments.map((d) => {
+      if (d === "المشاريع") return "Projects";
+      if (d === "المالية") return "Finance";
+      if (d === "الإدارة") return "Management";
+      return d;
+    });
+    return `Found more than one employee named ${name}. Please specify the department (${enDepts.join(", ")}).`;
+  }
 
   return `وجدت أكثر من موظف باسم ${name}. وضّح القسم (${departments.join("، ")}).`;
 }
@@ -36,13 +48,15 @@ function ambiguousEmployeeReply(
 router.post("/chat", async (req, res) => {
   try {
     const body = ChatBodySchema.parse(req.body);
+    const isEnglish = body.lang === "en" || /^[a-zA-Z0-9\s.,?!'"-:;()]+$/.test(body.message.trim());
+    const lang = isEnglish ? "en" : (body.lang || "ar");
 
     const sender = await getEmployeeById(body.user_id);
 
     if (!sender) {
       return res.status(404).json({
         action: "error",
-        reply: "المستخدم غير موجود."
+        reply: lang === "en" ? "User not found." : "المستخدم غير موجود."
       });
     }
 
@@ -51,14 +65,15 @@ router.post("/chat", async (req, res) => {
 
     if (config.logParseSource) {
       console.log(
-        `[parser=${parseResult.source}] user=${sender.id} intent=${parsed.intent}`
+        `[parser=${parseResult.source}] user=${sender.id} lang=${lang} intent=${parsed.intent}`
       );
     }
 
     if (parsed.intent === "policy_question") {
       const reply = answerPolicyQuestion(
         parsed.policyQuestion || body.message,
-        parsed.policyTopic
+        parsed.policyTopic,
+        lang
       );
 
       return res.json({
@@ -82,7 +97,9 @@ router.post("/chat", async (req, res) => {
         if (matches.length === 0) {
           return res.json({
             action: "clarification",
-            reply: `لم أجد موظفًا باسم ${parsed.targetEmployeeName}. وضّح الاسم أو القسم.`
+            reply: lang === "en"
+              ? `Could not find an employee named ${parsed.targetEmployeeName}. Please clarify the name or department.`
+              : `لم أجد موظفًا باسم ${parsed.targetEmployeeName}. وضّح الاسم أو القسم.`
           });
         }
 
@@ -91,7 +108,8 @@ router.post("/chat", async (req, res) => {
             action: "clarification",
             reply: ambiguousEmployeeReply(
               parsed.targetEmployeeName,
-              matches
+              matches,
+              lang
             )
           });
         }
@@ -103,7 +121,8 @@ router.post("/chat", async (req, res) => {
         sender,
         scope: parsed.listScope || "self",
         target,
-        targetDepartment: parsed.targetDepartment
+        targetDepartment: parsed.targetDepartment,
+        lang
       });
 
       if (!result.allowed) {
@@ -139,7 +158,9 @@ router.post("/chat", async (req, res) => {
         if (matches.length === 0) {
           return res.json({
             action: "clarification",
-            reply: `لم أجد موظفًا باسم ${parsed.assigneeName}. ممكن توضح الاسم أو القسم؟`
+            reply: lang === "en"
+              ? `Could not find an employee named ${parsed.assigneeName}. Could you clarify the name or department?`
+              : `لم أجد موظفًا باسم ${parsed.assigneeName}. ممكن توضح الاسم أو القسم؟`
           });
         }
 
@@ -148,7 +169,8 @@ router.post("/chat", async (req, res) => {
             action: "clarification",
             reply: ambiguousEmployeeReply(
               parsed.assigneeName,
-              matches
+              matches,
+              lang
             )
           });
         }
@@ -159,9 +181,10 @@ router.post("/chat", async (req, res) => {
       const result = await createTask({
         sender,
         target,
-        description: parsed.description || "مهمة جديدة",
+        description: parsed.description || (lang === "en" ? "New task" : "مهمة جديدة"),
         dateExpression: parsed.dateExpression,
-        timeExpression: parsed.timeExpression
+        timeExpression: parsed.timeExpression,
+        lang
       });
 
       if (!result.allowed) {
@@ -183,13 +206,15 @@ router.post("/chat", async (req, res) => {
 
     return res.json({
       action: "clarification",
-      reply: "لم أفهم الطلب بشكل كافٍ. ممكن توضحه أكثر؟"
+      reply: lang === "en"
+        ? "I did not fully understand the request. Could you please clarify?"
+        : "لم أفهم الطلب بشكل كافٍ. ممكن توضحه أكثر؟"
     });
   } catch (error: any) {
     if (error?.name === "ZodError") {
       return res.status(400).json({
         action: "error",
-        reply: "الطلب غير صالح.",
+        reply: req.body?.lang === "en" ? "Invalid request." : "الطلب غير صالح.",
         details: error.issues
       });
     }
@@ -198,7 +223,7 @@ router.post("/chat", async (req, res) => {
 
     return res.status(500).json({
       action: "error",
-      reply: "حدث خطأ داخلي."
+      reply: req.body?.lang === "en" ? "An internal server error occurred." : "حدث خطأ داخلي."
     });
   }
 });

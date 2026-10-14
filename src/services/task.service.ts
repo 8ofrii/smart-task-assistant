@@ -26,6 +26,38 @@ export async function getEmployeeById(
   return result.rows[0] || null;
 }
 
+export const EMP_EN_NAMES: Record<string, string> = {
+  "منيرة": "Monira",
+  "سارة": "Sara",
+  "فهد": "Fahad",
+  "خالد": "Khaled",
+  "نورة": "Noura",
+  "عبدالرحمن": "Abdulrahman",
+  "أحمد": "Ahmed"
+};
+
+export const EMP_AR_NAMES: Record<string, string> = {
+  "monira": "منيرة",
+  "mounira": "منيرة",
+  "munira": "منيرة",
+  "sara": "سارة",
+  "sarah": "سارة",
+  "fahad": "فهد",
+  "khaled": "خالد",
+  "khalid": "خالد",
+  "noura": "نورة",
+  "nora": "نورة",
+  "abdulrahman": "عبدالرحمن",
+  "abdelrahman": "عبدالرحمن",
+  "ahmed": "أحمد"
+};
+
+export const DEPT_AR_NAMES: Record<string, string> = {
+  "management": "الإدارة",
+  "projects": "المشاريع",
+  "finance": "المالية"
+};
+
 export async function findEmployeesByName(
   name: string,
   department?: string | null
@@ -36,18 +68,31 @@ export async function findEmployeesByName(
      ORDER BY id`
   );
 
-  const normalizedName = normalizeArabic(name);
-  const normalizedDepartment = department
-    ? normalizeArabic(department)
+  const rawLowerName = name.trim().toLowerCase();
+  const mappedArName = EMP_AR_NAMES[rawLowerName] || name;
+  const normalizedName = normalizeArabic(mappedArName);
+
+  let mappedArDept = department;
+  if (department) {
+    const rawLowerDept = department.trim().toLowerCase();
+    mappedArDept = DEPT_AR_NAMES[rawLowerDept] || department;
+  }
+  const normalizedDepartment = mappedArDept
+    ? normalizeArabic(mappedArDept)
     : null;
 
   return result.rows.filter((employee: Employee) => {
-    const nameMatches =
-      normalizeArabic(employee.name) === normalizedName;
+    const empArNorm = normalizeArabic(employee.name);
+    const empEnNorm = (EMP_EN_NAMES[employee.name] || "").toLowerCase();
 
+    const nameMatches =
+      empArNorm === normalizedName ||
+      empEnNorm === rawLowerName;
+
+    const empDeptNorm = normalizeArabic(employee.department);
     const departmentMatches =
       !normalizedDepartment ||
-      normalizeArabic(employee.department) === normalizedDepartment;
+      empDeptNorm === normalizedDepartment;
 
     return nameMatches && departmentMatches;
   });
@@ -82,14 +127,18 @@ export async function createTask(params: {
   description: string;
   dateExpression?: string | null;
   timeExpression?: string | null;
+  lang?: "ar" | "en";
 }) {
   const {
     sender,
     target,
     description,
     dateExpression,
-    timeExpression
+    timeExpression,
+    lang = "ar"
   } = params;
+
+  const isEn = lang === "en";
 
   if (!canAssignTask(sender, target)) {
     const reason =
@@ -105,12 +154,20 @@ export async function createTask(params: {
       reason
     });
 
+    let reply = "";
+    if (sender.role === "employee") {
+      reply = isEn
+        ? "You cannot assign tasks to another employee. You can only create tasks for yourself."
+        : "لا يمكنك إسناد مهمة لموظف آخر. يمكنك تسجيل مهام لنفسك فقط.";
+    } else {
+      reply = isEn
+        ? "You cannot assign tasks to an employee from another department."
+        : "لا يمكنك إسناد مهمة لموظف من قسم آخر.";
+    }
+
     return {
       allowed: false as const,
-      reply:
-        sender.role === "employee"
-          ? "لا يمكنك إسناد مهمة لموظف آخر. يمكنك تسجيل مهام لنفسك فقط."
-          : "لا يمكنك إسناد مهمة لموظف من قسم آخر."
+      reply
     };
   }
 
@@ -125,7 +182,7 @@ export async function createTask(params: {
      VALUES ($1, $2, $3, $4)
      RETURNING id, created_at`,
     [
-      description || "مهمة جديدة",
+      description || (isEn ? "New task" : "مهمة جديدة"),
       target.id,
       sender.id,
       dueAt.toUTC().toISO()
@@ -143,13 +200,18 @@ export async function createTask(params: {
     }
   });
 
-  const baseReply =
-    sender.id === target.id
-      ? "تم، سجلت المهمة لك."
-      : `تم، أسندت المهمة لـ${target.name}.`;
+  const targetName = isEn ? (EMP_EN_NAMES[target.name] || target.name) : target.name;
+  let baseReply = "";
+  if (sender.id === target.id) {
+    baseReply = isEn ? "Done, recorded the task for you." : "تم، سجلت المهمة لك.";
+  } else {
+    baseReply = isEn ? `Done, assigned the task to ${targetName}.` : `تم، أسندت المهمة لـ${target.name}.`;
+  }
 
   const reply = movedFromFriday
-    ? `${baseReply} الموعد وافق يوم الجمعة، لذلك تم ترحيله إلى السبت بنفس الوقت.`
+    ? (isEn
+        ? `${baseReply} The deadline was on a Friday, so it was moved to Saturday at the same time.`
+        : `${baseReply} الموعد وافق يوم الجمعة، لذلك تم ترحيله إلى السبت بنفس الوقت.`)
     : baseReply;
 
   return {
@@ -162,15 +224,20 @@ export async function createTask(params: {
   };
 }
 
-function formatTasks(rows: any[]): string {
-  if (!rows.length) return "لا توجد مهام مطابقة.";
+function formatTasks(rows: any[], lang: "ar" | "en" = "ar"): string {
+  const isEn = lang === "en";
+  if (!rows.length) return isEn ? "No matching tasks found." : "لا توجد مهام مطابقة.";
 
   const lines = rows.map((task, index) => {
     const dueAt = DateTime.fromJSDate(task.due_at)
       .setZone(APP_TIMEZONE)
       .toFormat("yyyy-LL-dd HH:mm");
 
-    return `${index + 1}. ${task.description} - ${task.assignee_name} - ${dueAt}`;
+    const assigneeName = isEn
+      ? (EMP_EN_NAMES[task.assignee_name] || task.assignee_name)
+      : task.assignee_name;
+
+    return `${index + 1}. ${task.description} - ${assigneeName} - ${dueAt}`;
   });
 
   return lines.join("\n");
@@ -181,13 +248,17 @@ export async function listTasks(params: {
   scope: ListScope;
   target?: Employee | null;
   targetDepartment?: string | null;
+  lang?: "ar" | "en";
 }) {
   const {
     sender,
     scope,
     target,
-    targetDepartment
+    targetDepartment,
+    lang = "ar"
   } = params;
+
+  const isEn = lang === "en";
 
   let query = `
     SELECT
@@ -213,7 +284,9 @@ export async function listTasks(params: {
       return {
         allowed: false as const,
         status: "clarification" as const,
-        reply: "حدد اسم الموظف المطلوب عرض مهامه."
+        reply: isEn
+          ? "Please specify the employee whose tasks you want to view."
+          : "حدد اسم الموظف المطلوب عرض مهامه."
       };
     }
 
@@ -229,7 +302,9 @@ export async function listTasks(params: {
       return {
         allowed: false as const,
         status: "rejected" as const,
-        reply: "لا تملك صلاحية عرض مهام هذا الموظف."
+        reply: isEn
+          ? "You do not have permission to view this employee's tasks."
+          : "لا تملك صلاحية عرض مهام هذا الموظف."
       };
     }
 
@@ -251,7 +326,9 @@ export async function listTasks(params: {
       return {
         allowed: false as const,
         status: "rejected" as const,
-        reply: "لا تملك صلاحية عرض مهام هذا القسم."
+        reply: isEn
+          ? "You do not have permission to view this department's tasks."
+          : "لا تملك صلاحية عرض مهام هذا القسم."
       };
     }
 
@@ -269,7 +346,9 @@ export async function listTasks(params: {
       return {
         allowed: false as const,
         status: "rejected" as const,
-        reply: "لا تملك صلاحية عرض جميع مهام الشركة."
+        reply: isEn
+          ? "You do not have permission to view all company tasks."
+          : "لا تملك صلاحية عرض مهام جميع موظفي الشركة."
       };
     }
   }
@@ -289,14 +368,14 @@ export async function listTasks(params: {
     }
   });
 
-    return {
+  return {
     allowed: true as const,
     status: "ok" as const,
     tasks: result.rows,
     reply:
       result.rows.length === 0
-        ? "لا توجد مهام مطابقة."
-        : `المهام:\n${formatTasks(result.rows)}`
+        ? (isEn ? "No matching tasks found." : "لا توجد مهام مطابقة.")
+        : (isEn ? `Tasks:\n${formatTasks(result.rows, lang)}` : `المهام:\n${formatTasks(result.rows, lang)}`)
   };
 }
 

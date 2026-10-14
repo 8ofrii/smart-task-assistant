@@ -34,4 +34,17 @@ describe("Arabic date resolution", () => {
     expect(result.dueAt.weekday).toBe(6);
     expect(result.dueAt.hour).toBe(9);
   });
+
+  it("resolves English relative dates and times", () => {
+    expect(resolveDueDate("tomorrow", "10 AM", now).dueAt.toFormat("yyyy-LL-dd HH:mm"))
+      .toBe("2026-10-14 10:00");
+
+    expect(resolveDueDate("day after tomorrow", "1 PM", now).dueAt.toFormat("yyyy-LL-dd HH:mm"))
+      .toBe("2026-10-15 13:00");
+
+    const fridayResult = resolveDueDate("Friday", "9 AM", now);
+    expect(fridayResult.movedFromFriday).toBe(true);
+    expect(fridayResult.dueAt.weekday).toBe(6);
+    expect(fridayResult.dueAt.hour).toBe(9);
+  });
 });

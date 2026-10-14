@@ -25,4 +25,20 @@ describe("policy grounding", () => {
       detectPolicyTopic("ما المطلوب للإجازة المرضية؟")
     ).toBe("sick_leave");
   });
+
+  it("answers policy questions in English when requested", () => {
+    const answer = answerPolicyQuestion(
+      "How many days before leave do I have to submit?",
+      null,
+      "en"
+    );
+    expect(answer).toContain("5 business days");
+
+    const housing = answerPolicyQuestion(
+      "What is the housing allowance for employees?",
+      null,
+      "en"
+    );
+    expect(housing).toBe("This information is not available in the company policy.");
+  });
 });
