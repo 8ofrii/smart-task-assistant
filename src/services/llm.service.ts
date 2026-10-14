@@ -73,7 +73,7 @@ For create_task:
 - assigneeDepartment: department stated by the user, otherwise null.
 - description: ONLY the actual task content. Remove command words, employee name, date and time.
 - dateExpression: relative-date phrase, such as "tomorrow", "next Sunday", "Friday", "بكرة", "بعد بكرة", "الأحد الجاي", "الجمعة".
-- timeExpression: phrases such as "10 AM", "afternoon", "1 PM", "العصر", "الظهر", "الساعة 10".
+- timeExpression: phrases such as "10 AM", "afternoon", "1 PM", "العصر", "الظهر", "الساعة 10", "الساعة الرابعة مساءا", "4:30 PM", "الرابعة والنصف عصرا".
 
 For list_tasks:
 - listScope:
@@ -134,7 +134,26 @@ function extractNameFallback(message: string): string | null {
         "مهمه",
         "نفسي",
         "اجتماع",
-        "تقرير"
+        "تقرير",
+        "الساعة",
+        "الساعه",
+        "الرابعة",
+        "الرابعه",
+        "الخامسة",
+        "الخامسه",
+        "غدا",
+        "بكرة",
+        "بكره",
+        "اليوم",
+        "الجمعة",
+        "الجمعه",
+        "الاحد",
+        "الأحد",
+        "الاثنين",
+        "الثلاثاء",
+        "الاربعاء",
+        "الخميس",
+        "السبت"
       ];
       if (!ignoredWords.includes(candidate)) {
         return candidate;
@@ -155,7 +174,12 @@ function cleanTaskDescription(
     /سج[ّ]?ل/gu,
     /حط/gu,
     /ذك[ّ]?رني/gu,
+    /اض[فِ]|أض[فِ]/gu,
+    /اعمل/gu,
+    /سوي/gu,
+    /انشئ|أنشئ/gu,
     /مهمه|مهمة/gu,
+    /تاسك/gu,
     /بعد\s+(?:بكره|بكرة)/gu,
     /بكره|بكرة/gu,
     /(?:الاحد|الأحد)\s+(?:الجاي|القادم)/gu,
@@ -164,6 +188,7 @@ function cleanTaskDescription(
     /الظهر/gu,
     /(?:الساعة\s*)?[٠-٩0-9]{1,2}(?::[٠-٩0-9]{1,2})?\s*(?:الظهر|العصر|الصبح|المغرب|العشاء|صباح[اً]?|مساء[اً]?)?/gu,
     /الساعة\s*[٠-٩0-9]{1,2}(?::[٠-٩0-9]{1,2})?/gu,
+    /(?:الساعة\s*)?(?:الواحدة|واحدة|الثانية|ثانية|تانية|الثالثة|ثالثة|تالتة|الرابعة|رابعة|الخامسة|خامسة|السادسة|سادسة|السابعة|سابعة|الثامنة|ثامنة|تامنة|التاسعة|تاسعة|العاشرة|عاشرة|الحادية\s+عشر(?:ة)?|الثانية\s+عشر(?:ة)?)(?:\s*(?:و\s*(?:نصف|نص|ربع|ثلث|تلت)|إلا\s*(?:ربع|ثلث|تلت)))?(?:\s*(?:الظهر|العصر|الصبح|المغرب|العشاء|صباح[اً]?|مساء[اً]?|عصر[اً]?|ليلا?))?/gu,
     // English removals
     /assign\s+a\s+task\s+to/gi,
     /set\s+a\s+task\s+for/gi,
@@ -284,9 +309,20 @@ function fallbackParser(message: string): ParsedMessage {
     "حط",
     "ذكرني",
     "مهمه",
+    "مهمة",
     "ابي",
+    "أبي",
+    "اضف",
+    "أضف",
+    "إضافة",
+    "اضافة",
+    "اعمل",
+    "سوي",
+    "تاسك",
     "assign",
     "set a task",
+    "create task",
+    "add task",
     "remind me",
     "i want",
     "schedule",
@@ -331,7 +367,18 @@ function fallbackParser(message: string): ParsedMessage {
 
     let timeExpression: string | null = null;
 
-    if (
+    const wordHoursPattern = /(?:الساعة\s*)?(?:الواحدة|واحدة|الثانية|ثانية|تانية|الثالثة|ثالثة|تالتة|الرابعة|رابعة|الخامسة|خامسة|السادسة|سادسة|السابعة|سابعة|الثامنة|ثامنة|تامنة|التاسعة|تاسعة|العاشرة|عاشرة|الحادية\s+عشر(?:ة)?|الثانية\s+عشر(?:ة)?)(?:\s*(?:و\s*(?:نصف|نص|ربع|ثلث|تلت)|إلا\s*(?:ربع|ثلث|تلت)))?(?:\s*(?:الظهر|العصر|الصبح|المغرب|العشاء|صباح[اً]?|مساء[اً]?|عصر[اً]?|ليلا?))?/i;
+
+    const digitTimePattern = /(?:الساعة\s*|at\s*)?([٠-٩0-9]{1,2}(?::[٠-٩0-9]{1,2})?\s*(?:am|pm|صباح[اً]?|مساء[اً]?|عصر[اً]?|الظهر|العصر|الصبح|المغرب|العشاء)?)/i;
+
+    const digitMatch = message.match(digitTimePattern);
+    const wordMatch = message.match(wordHoursPattern);
+
+    if (digitMatch && digitMatch[1] && /\d|[٠-٩]/.test(digitMatch[1])) {
+      timeExpression = digitMatch[0].trim();
+    } else if (wordMatch && wordMatch[0] && wordMatch[0].trim() && !/^(?:صباح|مساء)$/i.test(wordMatch[0].trim())) {
+      timeExpression = wordMatch[0].trim();
+    } else if (
       normalized.includes("العصر") ||
       lower.includes("this afternoon") ||
       lower.includes("afternoon")
@@ -342,12 +389,23 @@ function fallbackParser(message: string): ParsedMessage {
       lower.includes("noon")
     ) {
       timeExpression = "الظهر";
-    } else {
-      const timeMatch = message.match(
-        /(?:الساعة\s*|at\s*)?([٠-٩0-9]{1,2}(?::[٠-٩0-9]{1,2})?\s*(?:am|pm|صباح[اً]?|مساء[اً]?)?)/i
-      );
-
-      if (timeMatch) timeExpression = timeMatch[0];
+    } else if (
+      normalized.includes("الصبح") ||
+      normalized.includes("صباح") ||
+      lower.includes("morning")
+    ) {
+      timeExpression = "الصبح";
+    } else if (
+      normalized.includes("المغرب") ||
+      normalized.includes("مغرب")
+    ) {
+      timeExpression = "المغرب";
+    } else if (
+      normalized.includes("العشاء") ||
+      normalized.includes("عشاء") ||
+      lower.includes("night")
+    ) {
+      timeExpression = "العشاء";
     }
 
     return {

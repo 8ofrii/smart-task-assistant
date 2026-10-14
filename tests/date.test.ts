@@ -47,4 +47,18 @@ describe("Arabic date resolution", () => {
     expect(fridayResult.dueAt.weekday).toBe(6);
     expect(fridayResult.dueAt.hour).toBe(9);
   });
+
+  it("resolves Arabic word hours and times correctly", () => {
+    // Exact user case: الساعة الرابعة مساءا -> 16:00
+    expect(parseTime("الساعة الرابعة مساءا")).toEqual({ hour: 16, minute: 0 });
+    expect(parseTime("الساعة الرابعة عصرا")).toEqual({ hour: 16, minute: 0 });
+    expect(parseTime("الساعة 4 مساء")).toEqual({ hour: 16, minute: 0 });
+    expect(parseTime("الساعة الرابعة والنصف مساءا")).toEqual({ hour: 16, minute: 30 });
+    expect(parseTime("الساعة الخامسة والربع مساء")).toEqual({ hour: 17, minute: 15 });
+    expect(parseTime("الساعة العاشرة صباحا")).toEqual({ hour: 10, minute: 0 });
+    expect(parseTime("الحادية عشر صباحا")).toEqual({ hour: 11, minute: 0 });
+    expect(parseTime("الساعة الثانية عشر ظهرا")).toEqual({ hour: 12, minute: 0 });
+    expect(parseTime("الساعة الثانية عشر ليلا")).toEqual({ hour: 0, minute: 0 });
+    expect(parseTime("خمسة الا ربع مساء")).toEqual({ hour: 16, minute: 45 });
+  });
 });
