@@ -160,7 +160,7 @@ router.post("/chat", async (req, res) => {
             action: "clarification",
             reply: lang === "en"
               ? `Could not find an employee named ${parsed.assigneeName}. Could you clarify the name or department?`
-              : `لم أجد موظفًا باسم ${parsed.assigneeName}. ممكن توضح الاسم أو القسم؟`
+              : `لم أجد موظفًا باسم ${parsed.assigneeName}. يُرجى توضيح الاسم أو القسم.`
           });
         }
 
@@ -208,7 +208,7 @@ router.post("/chat", async (req, res) => {
       action: "clarification",
       reply: lang === "en"
         ? "I did not fully understand the request. Could you please clarify?"
-        : "لم أفهم الطلب بشكل كافٍ. ممكن توضحه أكثر؟"
+        : "لم يتضح لي الطلب بدقة، فضلاً وضّح المطلوب بمزيد من التفصيل."
     });
   } catch (error: any) {
     if (error?.name === "ZodError") {
