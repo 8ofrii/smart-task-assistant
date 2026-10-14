@@ -72,7 +72,7 @@ For create_task:
 - assigneeName: name stated by the user (e.g. "Khaled", "خالد", "Noura"), or null when the task is for the sender (e.g. "remind me", "ذكرني").
 - assigneeDepartment: department stated by the user, otherwise null.
 - description: ONLY the actual task content. Remove command words, employee name, date and time.
-- dateExpression: relative-date phrase, such as "tomorrow", "next Sunday", "Friday", "بكرة", "بعد بكرة", "الأحد الجاي", "الجمعة".
+- dateExpression: relative-date phrase, such as "tomorrow", "next Sunday", "Friday", "بكرة", "بعد بكرة", "الأحد الجاي", "الجمعة", "بعد 3 أيام", "بعد يومين", "بعد أسبوع", "in 3 days".
 - timeExpression: phrases such as "10 AM", "afternoon", "1 PM", "العصر", "الظهر", "الساعة 10", "الساعة الرابعة مساءا", "4:30 PM", "الرابعة والنصف عصرا".
 
 For list_tasks:
@@ -114,7 +114,8 @@ function extractNameFallback(message: string): string | null {
 
   // Arabic regex patterns
   const patterns = [
-    /(?:سجل|حط|إسناد|اسناد|أبي|ابي)(?:\s+مهمة|\s+مهمه)?\s+ل?([\p{L}]+)/u,
+    /(?:ضيف|سجل|حط|إسناد|اسناد|أبي|ابي|اعمل|سوي)(?:\s+مهمة|\s+مهمه)?\s+(?:على|علي|ل|حق)?\s*([\p{L}]+)/u,
+    /(?:على|علي|حق)\s+([\p{L}]+)(?=\s|$)/u,
     /ل([\p{L}]+)(?=\s|$)/u,
     /(?:ابي|أبي)\s+([\p{L}]+)(?=\s|$)/u
   ];
@@ -153,7 +154,15 @@ function extractNameFallback(message: string): string | null {
         "الثلاثاء",
         "الاربعاء",
         "الخميس",
-        "السبت"
+        "السبت",
+        "بعد",
+        "قبل",
+        "خلال",
+        "يوم",
+        "ايام",
+        "أيام",
+        "اسبوع",
+        "أسبوع"
       ];
       if (!ignoredWords.includes(candidate)) {
         return candidate;
@@ -171,6 +180,7 @@ function cleanTaskDescription(
   let description = message;
 
   const removals = [
+    /ضيف/gu,
     /سج[ّ]?ل/gu,
     /حط/gu,
     /ذك[ّ]?رني/gu,
@@ -180,12 +190,16 @@ function cleanTaskDescription(
     /انشئ|أنشئ/gu,
     /مهمه|مهمة/gu,
     /تاسك/gu,
+    /(?:بعد|خلال)\s*(?:[٠-٩0-9]+|ثلاثة|ثلاث|اربعة|اربع|خمسة|خمس|ستة|ست|سبعة|سبع|ثمانية|ثمان|تسعة|تسع|عشرة|عشر)\s*(?:أيام|ايام|يوم|اسابيع|أسابيع|اسبوع|أسبوع)/gu,
+    /بعد\s+(?:اسبوعين|أسبوعين|اسبوع|أسبوع|يومين)/gu,
     /بعد\s+(?:بكره|بكرة)/gu,
     /بكره|بكرة/gu,
     /(?:الاحد|الأحد)\s+(?:الجاي|القادم)/gu,
     /الجمعه|الجمعة/gu,
     /العصر/gu,
     /الظهر/gu,
+    /in\s+\d+\s+days/gi,
+    /after\s+\d+\s+days/gi,
     /(?:الساعة\s*)?[٠-٩0-9]{1,2}(?::[٠-٩0-9]{1,2})?\s*(?:الظهر|العصر|الصبح|المغرب|العشاء|صباح[اً]?|مساء[اً]?)?/gu,
     /الساعة\s*[٠-٩0-9]{1,2}(?::[٠-٩0-9]{1,2})?/gu,
     /(?:الساعة\s*)?(?:الواحدة|واحدة|الثانية|ثانية|تانية|الثالثة|ثالثة|تالتة|الرابعة|رابعة|الخامسة|خامسة|السادسة|سادسة|السابعة|سابعة|الثامنة|ثامنة|تامنة|التاسعة|تاسعة|العاشرة|عاشرة|الحادية\s+عشر(?:ة)?|الثانية\s+عشر(?:ة)?)(?:\s*(?:و\s*(?:نصف|نص|ربع|ثلث|تلت)|إلا\s*(?:ربع|ثلث|تلت)))?(?:\s*(?:الظهر|العصر|الصبح|المغرب|العشاء|صباح[اً]?|مساء[اً]?|عصر[اً]?|ليلا?))?/gu,
@@ -218,7 +232,7 @@ function cleanTaskDescription(
   }
 
   if (assigneeName) {
-    description = description.replace(new RegExp(`\\b${assigneeName}\\b`, "giu"), " ");
+    description = description.replace(new RegExp(`(?:علي|على|حق|ل)?\\s*\\b${assigneeName}\\b`, "giu"), " ");
     description = description.replace(new RegExp(`ل${assigneeName}\\b`, "gu"), " ");
     description = description.replace(assigneeName, " ");
     description = description.replace(`ل${assigneeName}`, " ");
@@ -305,6 +319,7 @@ function fallbackParser(message: string): ParsedMessage {
 
   // Task creation hints
   const createHints = [
+    "ضيف",
     "سجل",
     "حط",
     "ذكرني",
@@ -342,7 +357,12 @@ function fallbackParser(message: string): ParsedMessage {
 
     let dateExpression: string | null = null;
 
-    if (
+    const daysPattern = /(?:بعد|خلال)\s*(?:[٠-٩0-9]+|ثلاثة|ثلاث|اربعة|اربع|خمسة|خمس|ستة|ست|سبعة|سبع|ثمانية|ثمان|تسعة|تسع|عشرة|عشر)\s*(?:أيام|ايام|يوم|اسابيع|أسابيع|اسبوع|أسبوع)|بعد\s+(?:اسبوعين|أسبوعين|اسبوع|أسبوع|يومين)|in\s+\d+\s+days|after\s+\d+\s+days/i;
+    const daysMatch = message.match(daysPattern);
+
+    if (daysMatch) {
+      dateExpression = daysMatch[0].trim();
+    } else if (
       normalized.includes("بعد بكره") ||
       lower.includes("day after tomorrow") ||
       lower.includes("after tomorrow")
@@ -369,7 +389,7 @@ function fallbackParser(message: string): ParsedMessage {
 
     const wordHoursPattern = /(?:الساعة\s*)?(?:الواحدة|واحدة|الثانية|ثانية|تانية|الثالثة|ثالثة|تالتة|الرابعة|رابعة|الخامسة|خامسة|السادسة|سادسة|السابعة|سابعة|الثامنة|ثامنة|تامنة|التاسعة|تاسعة|العاشرة|عاشرة|الحادية\s+عشر(?:ة)?|الثانية\s+عشر(?:ة)?)(?:\s*(?:و\s*(?:نصف|نص|ربع|ثلث|تلت)|إلا\s*(?:ربع|ثلث|تلت)))?(?:\s*(?:الظهر|العصر|الصبح|المغرب|العشاء|صباح[اً]?|مساء[اً]?|عصر[اً]?|ليلا?))?/i;
 
-    const digitTimePattern = /(?:الساعة\s*|at\s*)?([٠-٩0-9]{1,2}(?::[٠-٩0-9]{1,2})?\s*(?:am|pm|صباح[اً]?|مساء[اً]?|عصر[اً]?|الظهر|العصر|الصبح|المغرب|العشاء)?)/i;
+    const digitTimePattern = /(?:(?:الساعة\s*|at\s+)[٠-٩0-9]{1,2}(?::[٠-٩0-9]{1,2})?(?:\s*(?:am|pm|صباح[اً]?|مساء[اً]?|عصر[اً]?|الظهر|العصر|الصبح|المغرب|العشاء))?|[٠-٩0-9]{1,2}:[٠-٩0-9]{1,2}(?:\s*(?:am|pm|صباح[اً]?|مساء[اً]?|عصر[اً]?|الظهر|العصر|الصبح|المغرب|العشاء))?|[٠-٩0-9]{1,2}\s*(?:am|pm|صباح[اً]?|مساء[اً]?|عصر[اً]?|الظهر|العصر|الصبح|المغرب|العشاء))/i;
 
     const digitMatch = message.match(digitTimePattern);
     const wordMatch = message.match(wordHoursPattern);

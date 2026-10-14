@@ -61,4 +61,23 @@ describe("Arabic date resolution", () => {
     expect(parseTime("الساعة الثانية عشر ليلا")).toEqual({ hour: 0, minute: 0 });
     expect(parseTime("خمسة الا ربع مساء")).toEqual({ hour: 16, minute: 45 });
   });
+
+  it("resolves multi-day relative dates such as بعد 3 ايام", () => {
+    // 2026-10-13 (Tuesday) + 2 days -> 2026-10-15 (Thursday)
+    expect(resolveDueDate("بعد 2 يوم", "الساعة 10", now).dueAt.toFormat("yyyy-LL-dd HH:mm"))
+      .toBe("2026-10-15 10:00");
+
+    // 2026-10-13 (Tuesday) + 3 days -> 2026-10-16 is Friday -> rolled to Saturday 2026-10-17!
+    const res3Days = resolveDueDate("بعد 3 ايام", "العصر", now);
+    expect(res3Days.movedFromFriday).toBe(true);
+    expect(res3Days.dueAt.toFormat("yyyy-LL-dd HH:mm")).toBe("2026-10-17 15:00");
+
+    // 2026-10-13 (Tuesday) + 4 days -> 2026-10-17 (Saturday)
+    expect(resolveDueDate("بعد 4 أيام", "الساعة 4 العصر", now).dueAt.toFormat("yyyy-LL-dd HH:mm"))
+      .toBe("2026-10-17 16:00");
+
+    // In 5 days
+    expect(resolveDueDate("in 5 days", "10 AM", now).dueAt.toFormat("yyyy-LL-dd HH:mm"))
+      .toBe("2026-10-18 10:00");
+  });
 });

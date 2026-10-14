@@ -245,6 +245,58 @@ function resolveRelativeDate(dateText: string, now: DateTime): DateTime {
     if (parsed.isValid) return parsed.startOf("day");
   }
 
+  // Relative offset in days/weeks: e.g. "بعد 3 ايام", "بعد 5 أيام", "بعد يومين", "بعد اسبوع", "after 3 days", "in 3 days"
+  const arabicNumText = arabicDigitsToEnglish(normalized);
+
+  if (
+    normalized.includes("بعد اسبوعين") ||
+    normalized.includes("بعد أسبوعين") ||
+    lower.includes("after two weeks") ||
+    lower.includes("in two weeks")
+  ) return date.plus({ weeks: 2 });
+
+  if (
+    normalized.includes("بعد اسبوع") ||
+    normalized.includes("بعد أسبوع") ||
+    lower.includes("after a week") ||
+    lower.includes("in a week") ||
+    lower.includes("after 1 week")
+  ) return date.plus({ weeks: 1 });
+
+  if (
+    normalized.includes("بعد يومين") ||
+    lower.includes("after two days") ||
+    lower.includes("in two days")
+  ) return date.plus({ days: 2 });
+
+  const daysMatch = arabicNumText.match(/(?:بعد|خلال|in|after)\s*(\d+)\s*(?:ايام|أيام|يوم|days?)/i);
+  if (daysMatch) {
+    const numDays = Number(daysMatch[1]);
+    return date.plus({ days: numDays });
+  }
+
+  const weeksMatch = arabicNumText.match(/(?:بعد|خلال|in|after)\s*(\d+)\s*(?:اسابيع|أسابيع|اسبوع|أسبوع|weeks?)/i);
+  if (weeksMatch) {
+    const numWeeks = Number(weeksMatch[1]);
+    return date.plus({ weeks: numWeeks });
+  }
+
+  const wordDays: [string, number][] = [
+    ["ثلاثه", 3], ["ثلاثة", 3], ["تلاته", 3], ["three", 3],
+    ["اربعه", 4], ["أربعة", 4], ["four", 4],
+    ["خمسه", 5], ["خمسة", 5], ["five", 5],
+    ["سته", 6], ["ستة", 6], ["six", 6],
+    ["سبعه", 7], ["سبعة", 7], ["seven", 7],
+    ["ثمانيه", 8], ["ثمانية", 8], ["تمانية", 8], ["eight", 8],
+    ["تسعه", 9], ["تسعة", 9], ["nine", 9],
+    ["عشره", 10], ["عشرة", 10], ["ten", 10]
+  ];
+  for (const [w, n] of wordDays) {
+    if (normalized.includes(`بعد ${normalizeArabic(w)}`)) {
+      return date.plus({ days: n });
+    }
+  }
+
   if (
     normalized.includes("بعد بكره") ||
     normalized.includes("بعد بكرة") ||
