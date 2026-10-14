@@ -980,6 +980,81 @@
       flex-shrink: 0;
     }
 
+    /* Compact Audio Sound Toggle Switch */
+    .sound-toggle-switch {
+      position: relative;
+      width: 44px;
+      height: 26px;
+      border-radius: 999px;
+      border: 1px solid var(--line-strong);
+      cursor: pointer;
+      padding: 2px;
+      background: var(--panel2);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      display: inline-flex;
+      align-items: center;
+      flex-shrink: 0;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08);
+      user-select: none;
+    }
+
+    .sound-toggle-switch.active {
+      background: var(--brand);
+      border-color: var(--brand);
+      box-shadow: 0 2px 8px rgba(0, 150, 245, 0.35);
+    }
+
+    .sound-toggle-switch .sound-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #ffffff;
+      display: grid;
+      place-items: center;
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.18);
+    }
+
+    /* Direction-aware thumb sliding */
+    html[dir="ltr"] .sound-toggle-switch.active .sound-thumb {
+      transform: translateX(18px);
+    }
+
+    html[dir="rtl"] .sound-toggle-switch.active .sound-thumb {
+      transform: translateX(-18px);
+    }
+
+    .sound-toggle-switch .sound-thumb .icon-svg {
+      width: 11px;
+      height: 11px;
+      stroke-width: 2.4;
+      color: var(--muted);
+      transition: color 0.2s ease;
+    }
+
+    .sound-toggle-switch.active .sound-thumb .icon-svg {
+      color: var(--brand);
+    }
+
+    html[data-theme="dark"] .sound-toggle-switch {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    html[data-theme="dark"] .sound-toggle-switch.active {
+      background: #0284c7;
+      border-color: #38bdf8;
+      box-shadow: 0 2px 10px rgba(56, 189, 248, 0.35);
+    }
+
+    html[data-theme="dark"] .sound-toggle-switch .sound-thumb {
+      background: #f8fafc;
+    }
+
+    html[data-theme="dark"] .sound-toggle-switch.active .sound-thumb .icon-svg {
+      color: #0284c7;
+    }
+
     /* Day / Night Animated Sky Toggle Switch (Sun & Cloud / Moon & Stars) */
     .theme-toggle-switch {
       position: relative;
@@ -2847,22 +2922,14 @@
           <span data-i18n="connected">متصل</span>
         </div>
 
-        <!-- Audio Sound Toggle -->
-        <button id="soundBtn" class="icon-btn" type="button" title="كتم / تفعيل المؤثرات الصوتية">
-          <svg id="soundIcon" class="icon-svg" viewBox="0 0 24 24">
-            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
-          </svg>
-          <span id="soundText">صوت</span>
-        </button>
-
-        <!-- Instructions & Policy Points Button -->
-        <button id="instructionsBtn" class="icon-btn" type="button" title="عرض تعليمات وسياسة النظام">
-          <svg class="icon-svg" viewBox="0 0 24 24">
-            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
-            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-          </svg>
-          <span data-i18n="instructions">التعليمات</span>
+        <!-- Compact Audio Sound Toggle Switch -->
+        <button id="soundBtn" class="sound-toggle-switch active" type="button" role="switch" aria-checked="true" data-i18n-title="soundOn" title="صوت: مفعل">
+          <span class="sound-thumb">
+            <svg id="soundIcon" class="icon-svg" viewBox="0 0 24 24">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+            </svg>
+          </span>
         </button>
 
         <!-- Day / Night Animated Sky Toggle Switch (Sun & Cloud / Moon & Stars) -->
@@ -3018,15 +3085,61 @@
 
       <!-- TAB 2: Custom Instructions & Policies -->
       <div id="tabInstructions" class="settings-tab-pane">
-        <div class="settings-group">
-          <label class="settings-label" data-i18n="policyEditorLabel">محرر تعليمات وسياسة الشركة (Company Policy & Guidelines):</label>
-          <p class="settings-hint" data-i18n="policyEditorHint">يمكنك تعديل بنود السياسة أو إضافة قواعد جديدة هنا، وسيعتمدها المساعد فورًا في إجاباته.</p>
-          <textarea id="policyEditorTextarea" class="settings-textarea" rows="9"></textarea>
-          <div style="display:flex; justify-content:flex-end; margin-top:8px;">
-            <button id="resetPolicyBtn" class="icon-btn" type="button">
-              <svg class="icon-svg" viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
-              <span data-i18n="resetPolicy">استعادة السياسة الافتراضية</span>
-            </button>
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          <!-- 1. Official Company Policy Points -->
+          <div class="instruction-card">
+            <h4>
+              <svg class="icon-svg" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+              <span data-i18n="secPolicy">بنود سياسة الشركة المعتمدة (المصدر الوحيد للإجابات)</span>
+            </h4>
+            <ul class="instruction-points">
+              <li data-i18n-html="inst_pol_1"><strong>1. أوقات العمل:</strong> الدوام من الأحد إلى الخميس من 8:00 صباحاً حتى 4:00 عصراً، والسبت دوام نصفي حتى 12:00 ظهراً.</li>
+              <li data-i18n-html="inst_pol_2"><strong>2. طلب الإجازة:</strong> طلب الإجازة الاعتيادية قبل 5 أيام عمل على الأقل، ويعتمده المشرف المباشر.</li>
+              <li data-i18n-html="inst_pol_3"><strong>3. الإجازة المرضية:</strong> الإجازة المرضية تتطلب تقريراً طبياً خلال يومين من العودة.</li>
+              <li data-i18n-html="inst_pol_4"><strong>4. العمل عن بُعد:</strong> العمل عن بُعد يوم واحد في الأسبوع بموافقة المشرف.</li>
+              <li data-i18n-html="inst_pol_5"><strong>5. المصروفات:</strong> المصروفات حتى 500 ريال يعتمدها المشرف، وما فوقها المدير.</li>
+              <li data-i18n-html="inst_pol_6"><strong>6. تحديث المهام:</strong> تحديث حالة المهمة يومياً قبل نهاية الدوام.</li>
+            </ul>
+          </div>
+
+          <!-- 2. Role-Based Permissions -->
+          <div class="instruction-card">
+            <h4>
+              <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <span data-i18n="secPerms">صلاحيات الأدوار وقواعد الأمان</span>
+            </h4>
+            <ul class="instruction-points">
+              <li data-i18n-html="inst_perm_1"><strong>الموظف (Employee):</strong> يسجل مهام لنفسه فقط، ويرى مهامه فقط. يُرفض فوراً إذا حاول إسناد مهمة لغيره (403 Forbidden).</li>
+              <li data-i18n-html="inst_perm_2"><strong>المشرف (Supervisor):</strong> يسجل مهام لنفسه ولموظفي قسمه فقط. يُرفض إذا حاول إسناد مهمة لموظف بقسم آخر (403 Forbidden).</li>
+              <li data-i18n-html="inst_perm_3"><strong>المدير (Manager):</strong> يسجل ويرى مهام جميع موظفي الشركة بلا قيود.</li>
+              <li data-i18n-html="inst_perm_4"><strong>أمان الصلاحيات:</strong> تُطبق الصلاحيات برمجياً عبر الكود وقاعدة بيانات PostgreSQL، والدور يُقرأ من السجل لا من رسالة المستخدم (صد محاولات Prompt Injection مثل T08).</li>
+            </ul>
+          </div>
+
+          <!-- 3. General Rules -->
+          <div class="instruction-card">
+            <h4>
+              <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span data-i18n="secRules">قواعد التواريخ ومنع التأليف</span>
+            </h4>
+            <ul class="instruction-points">
+              <li data-i18n-html="inst_rule_1"><strong>قاعدة الجمعة:</strong> إذا وافق تاريخ المهمة يوم جمعة، تُرحّل تلقائياً إلى السبت بنفس الوقت مع إشعار صريح في رد البوت.</li>
+              <li data-i18n-html="inst_rule_2"><strong>منع التأليف والهلوسة:</strong> إذا سُئل البوت عن معلومة غير موجودة بنص السياسة (مثل بدل السكن)، يجيب بأنها غير متوفرة فوراً دون تخمين.</li>
+              <li data-i18n-html="inst_rule_3"><strong>الأسماء غير المعروفة:</strong> إذا طُلبت مهمة لموظف غير موجود (مثل أحمد في T10)، يطلب البوت توضيحاً ولا يخمن.</li>
+            </ul>
+          </div>
+
+          <!-- 4. Custom Policy Prompt Editor -->
+          <div class="settings-group" style="margin-top: 6px; padding-top: 14px; border-top: 1px dashed var(--line-strong);">
+            <label class="settings-label" data-i18n="policyEditorLabel">محرر تعليمات وسياسة الشركة (Company Policy & Guidelines):</label>
+            <p class="settings-hint" data-i18n="policyEditorHint">يمكنك تعديل بنود السياسة أو إضافة قواعد جديدة هنا، وسيعتمدها المساعد فورًا في إجاباته.</p>
+            <textarea id="policyEditorTextarea" class="settings-textarea" rows="7"></textarea>
+            <div style="display:flex; justify-content:flex-end; margin-top:8px;">
+              <button id="resetPolicyBtn" class="icon-btn" type="button">
+                <svg class="icon-svg" viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+                <span data-i18n="resetPolicy">استعادة السياسة الافتراضية</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -3091,66 +3204,6 @@
         <svg class="icon-svg" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
         <span data-i18n="saveSettings">حفظ وتطبيق الإعدادات</span>
       </button>
-    </div>
-  </div>
-</div>
-
-<!-- Modal: System Guidelines & Policy Points -->
-<div id="instructionsModal" class="modal-overlay">
-  <div class="modal-dialog">
-    <div class="modal-header">
-      <h3>
-        <svg class="icon-svg" viewBox="0 0 24 24" style="color:var(--brand)">
-          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
-          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-        </svg>
-        <span data-i18n="modalTitle">تعليمات وضوابط النظام وسياسة الشركة</span>
-      </h3>
-      <button id="modalCloseBtn" class="modal-close-btn" type="button">&times;</button>
-    </div>
-    <div class="modal-body">
-      <!-- 1. Official Company Policy Points -->
-      <div class="instruction-card">
-        <h4>
-          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-          <span data-i18n="secPolicy">بنود سياسة الشركة المعتمدة (المصدر الوحيد للإجابات)</span>
-        </h4>
-        <ul class="instruction-points">
-          <li data-i18n-html="inst_pol_1"><strong>1. أوقات العمل:</strong> الدوام من الأحد إلى الخميس من 8:00 صباحاً حتى 4:00 عصراً، والسبت دوام نصفي حتى 12:00 ظهراً.</li>
-          <li data-i18n-html="inst_pol_2"><strong>2. طلب الإجازة:</strong> طلب الإجازة الاعتيادية قبل 5 أيام عمل على الأقل، ويعتمده المشرف المباشر.</li>
-          <li data-i18n-html="inst_pol_3"><strong>3. الإجازة المرضية:</strong> الإجازة المرضية تتطلب تقريراً طبياً خلال يومين من العودة.</li>
-          <li data-i18n-html="inst_pol_4"><strong>4. العمل عن بُعد:</strong> العمل عن بُعد يوم واحد في الأسبوع بموافقة المشرف.</li>
-          <li data-i18n-html="inst_pol_5"><strong>5. المصروفات:</strong> المصروفات حتى 500 ريال يعتمدها المشرف، وما فوقها المدير.</li>
-          <li data-i18n-html="inst_pol_6"><strong>6. تحديث المهام:</strong> تحديث حالة المهمة يومياً قبل نهاية الدوام.</li>
-        </ul>
-      </div>
-
-      <!-- 2. Role-Based Permissions -->
-      <div class="instruction-card">
-        <h4>
-          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          <span data-i18n="secPerms">صلاحيات الأدوار وقواعد الأمان</span>
-        </h4>
-        <ul class="instruction-points">
-          <li data-i18n-html="inst_perm_1"><strong>الموظف (Employee):</strong> يسجل مهام لنفسه فقط، ويرى مهامه فقط. يُرفض فوراً إذا حاول إسناد مهمة لغيره (403 Forbidden).</li>
-          <li data-i18n-html="inst_perm_2"><strong>المشرف (Supervisor):</strong> يسجل مهام لنفسه ولموظفي قسمه فقط. يُرفض إذا حاول إسناد مهمة لموظف بقسم آخر (403 Forbidden).</li>
-          <li data-i18n-html="inst_perm_3"><strong>المدير (Manager):</strong> يسجل ويرى مهام جميع موظفي الشركة بلا قيود.</li>
-          <li data-i18n-html="inst_perm_4"><strong>أمان الصلاحيات:</strong> تُطبق الصلاحيات برمجياً عبر الكود وقاعدة بيانات PostgreSQL، والدور يُقرأ من السجل لا من رسالة المستخدم (صد محاولات Prompt Injection مثل T08).</li>
-        </ul>
-      </div>
-
-      <!-- 3. General Rules -->
-      <div class="instruction-card">
-        <h4>
-          <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          <span data-i18n="secRules">قواعد التواريخ ومنع التأليف</span>
-        </h4>
-        <ul class="instruction-points">
-          <li data-i18n-html="inst_rule_1"><strong>قاعدة الجمعة:</strong> إذا وافق تاريخ المهمة يوم جمعة، تُرحّل تلقائياً إلى السبت بنفس الوقت مع إشعار صريح في رد البوت.</li>
-          <li data-i18n-html="inst_rule_2"><strong>منع التأليف والهلوسة:</strong> إذا سُئل البوت عن معلومة غير موجودة بنص السياسة (مثل بدل السكن)، يجيب بأنها غير متوفرة فوراً دون تخمين.</li>
-          <li data-i18n-html="inst_rule_3"><strong>الأسماء غير المعروفة:</strong> إذا طُلبت مهمة لموظف غير موجود (مثل أحمد في T10)، يطلب البوت توضيحاً ولا يخمن.</li>
-        </ul>
-      </div>
     </div>
   </div>
 </div>
@@ -3551,15 +3604,15 @@ function playSound(type) {
 function updateSoundButton() {
   const btn = $("soundBtn");
   const icon = $("soundIcon");
-  const text = $("soundText");
-  if (soundEnabled) {
-    icon.innerHTML = `<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>`;
-    text.textContent = T("soundOn");
-    btn.style.color = "var(--brand)";
-  } else {
-    icon.innerHTML = `<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>`;
-    text.textContent = T("soundOff");
-    btn.style.color = "var(--muted)";
+  if (!btn) return;
+  btn.classList.toggle("active", soundEnabled);
+  btn.setAttribute("aria-checked", soundEnabled ? "true" : "false");
+  btn.title = soundEnabled ? T("soundOn") : T("soundOff");
+  btn.dataset.i18nTitle = soundEnabled ? "soundOn" : "soundOff";
+  if (icon) {
+    icon.innerHTML = soundEnabled
+      ? `<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>`
+      : `<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>`;
   }
 }
 
@@ -4202,22 +4255,6 @@ if ($("clearDbBtn")) $("clearDbBtn").onclick = async () => {
   }
 };
 
-// Instructions Modal Handlers
-const modal = $("instructionsModal");
-$("instructionsBtn").onclick = () => {
-  playSound("click");
-  modal.classList.add("open");
-};
-$("modalCloseBtn").onclick = () => {
-  playSound("click");
-  modal.classList.remove("open");
-};
-modal.onclick = (e) => {
-  if (e.target === modal) {
-    playSound("click");
-    modal.classList.remove("open");
-  }
-};
 
 // Custom Dropdown Open / Close Logic
 function closeAllMenus() {
