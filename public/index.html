@@ -272,21 +272,18 @@
 
     .custom-trigger {
       width: 100%;
-      padding: 10px 14px;
+      padding: 8px 12px;
+      padding-inline-end: 32px;
       border-radius: 14px;
       border: 1px solid rgba(255, 255, 255, 0.35);
       background: rgba(255, 255, 255, 0.18);
       color: #ffffff;
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 8px;
       cursor: pointer;
       font-size: 12.5px;
-      font-weight: 600;
       transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
       backdrop-filter: blur(10px);
-      text-align: center;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
       position: relative;
     }
@@ -301,27 +298,65 @@
     .trigger-content {
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 8px;
+      gap: 10px;
       min-width: 0;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      margin: 0 auto;
+      flex: 1;
+      width: 100%;
     }
 
     .trigger-avatar {
-      width: 24px;
-      height: 24px;
-      border-radius: 8px;
+      width: 28px;
+      height: 28px;
+      border-radius: 9px;
       background: #ffffff;
       color: #0077d8;
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 800;
       display: grid;
       place-items: center;
       flex-shrink: 0;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+    }
+
+    .trigger-user-text {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      min-width: 0;
+      line-height: 1.25;
+      flex: 1;
+    }
+
+    html[dir="rtl"] .trigger-user-text {
+      align-items: flex-start;
+      text-align: right;
+    }
+
+    html[dir="ltr"] .trigger-user-text {
+      align-items: flex-start;
+      text-align: left;
+    }
+
+    .trigger-user-name {
+      font-size: 13px;
+      font-weight: 800;
+      color: #ffffff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+      display: block;
+    }
+
+    .trigger-user-meta {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.85);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+      display: block;
     }
 
     .chevron-icon {
@@ -461,8 +496,46 @@
     .opt-left {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
       min-width: 0;
+      flex: 1;
+    }
+
+    .opt-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      min-width: 0;
+      line-height: 1.25;
+      text-align: start;
+    }
+
+    html[dir="rtl"] .opt-meta {
+      align-items: flex-start;
+      text-align: right;
+    }
+
+    html[dir="ltr"] .opt-meta {
+      align-items: flex-start;
+      text-align: left;
+    }
+
+    .opt-name {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: inherit;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .opt-dept {
+      font-size: 10.5px;
+      color: var(--muted);
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .opt-avatar {
@@ -683,16 +756,16 @@
       display: inline-flex;
       align-items: center;
       gap: 7px;
-      padding: 7px 14px;
-      border-radius: 12px;
-      background: var(--panel2);
-      border: 1px solid var(--line-strong);
-      color: var(--text);
+      padding: 6px 13px;
+      border-radius: 10px;
+      background: rgba(0, 150, 245, 0.08);
+      border: 1px solid rgba(0, 150, 245, 0.22);
+      color: var(--brand);
       font-size: 12px;
-      font-weight: 800;
+      font-weight: 700;
       cursor: pointer;
       transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
       flex-shrink: 0;
     }
 
@@ -701,17 +774,30 @@
       color: #ffffff;
       border-color: var(--brand);
       transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(0, 150, 245, 0.3);
+      box-shadow: 0 4px 12px rgba(0, 150, 245, 0.28);
+    }
+
+    html[data-theme="dark"] .topbar-back-btn {
+      background: rgba(56, 189, 248, 0.1);
+      border-color: rgba(56, 189, 248, 0.28);
+      color: #38bdf8;
+    }
+
+    html[data-theme="dark"] .topbar-back-btn:hover {
+      background: #0284c7;
+      color: #ffffff;
+      border-color: #0284c7;
     }
 
     .topbar-back-btn .back-arrow-svg {
-      width: 15px;
-      height: 15px;
+      width: 14px;
+      height: 14px;
       stroke: currentColor;
       stroke-width: 2.4;
       stroke-linecap: round;
       stroke-linejoin: round;
       fill: none;
+      transition: transform 0.2s ease;
     }
 
     /* In Arabic RTL: arrow points right -> towards previous screen */
@@ -722,6 +808,13 @@
     /* In English LTR: arrow points left <- towards previous screen */
     html[dir="ltr"] .topbar-back-btn .back-arrow-svg {
       transform: rotate(0deg);
+    }
+
+    .header-divider {
+      width: 1px;
+      height: 22px;
+      background: var(--line);
+      flex-shrink: 0;
     }
 
     .topbar-chat-profile {
@@ -1183,8 +1276,8 @@
     /* 3D Interactive Perspective Employee Card */
     .person-card {
       position: relative;
-      min-height: 160px;
-      padding: 16px;
+      min-height: 175px;
+      padding: 16px 16px 14px;
       border: 1px solid var(--line);
       border-radius: var(--card-radius);
       cursor: pointer;
@@ -1273,28 +1366,39 @@
       letter-spacing: 0.2px;
     }
 
+    .person-card .person-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      margin-bottom: 12px;
+    }
+
     .person-card h3 {
-      margin: 0 0 3px;
+      margin: 0 0 4px;
       font-size: 15px;
       font-weight: 800;
+      line-height: 1.35;
     }
 
     .person-card .role-txt {
-      margin: 0 0 2px;
+      margin: 0 0 3px;
       color: var(--brand);
-      font-size: 11.5px;
+      font-size: 12px;
       font-weight: 700;
+      line-height: 1.35;
     }
 
     .person-card .dept-txt {
       margin: 0;
       color: var(--muted);
-      font-size: 11px;
+      font-size: 11.5px;
+      line-height: 1.45;
     }
 
     .card-footer {
       margin-top: auto;
-      padding-top: 10px;
+      padding-top: 12px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -1333,12 +1437,13 @@
     /* View 2: Chat View */
     .chat-page {
       display: none;
-      grid-template-rows: auto 1fr auto;
+      flex-direction: column;
       height: 100%;
+      overflow: hidden;
     }
 
     .chat-page.active {
-      display: grid;
+      display: flex;
     }
 
     .chat-head {
@@ -1380,6 +1485,8 @@
     }
 
     .messages {
+      flex: 1;
+      min-height: 0;
       overflow-y: auto;
       padding: 18px 24px;
       background: var(--panel2);
@@ -1739,6 +1846,7 @@
 
     /* Chat Composer */
     .composer {
+      flex-shrink: 0;
       padding: 12px 22px 14px;
       border-top: 1px solid var(--line);
       background: var(--panel-solid);
@@ -2624,7 +2732,11 @@
         <button type="button" class="custom-trigger" id="userTrigger">
           <div class="trigger-content">
             <div class="trigger-avatar" id="triggerAvatar">س</div>
-            <span id="triggerText">سارة — مشرف (المشاريع)</span>
+            <div class="trigger-user-text">
+              <strong class="trigger-user-name" id="triggerUserName">سارة</strong>
+              <span class="trigger-user-meta" id="triggerUserMeta">مشرف · المشاريع</span>
+            </div>
+            <span id="triggerText" style="display:none;">سارة — مشرف (المشاريع)</span>
           </div>
           <svg class="chevron-icon" viewBox="0 0 24 24">
             <polyline points="6 9 12 15 18 9"/>
@@ -2643,7 +2755,7 @@
             <rect x="14" y="14" width="7" height="7" rx="1.5"/>
             <rect x="3" y="14" width="7" height="7" rx="1.5"/>
           </svg>
-          <span data-i18n="grid">شبكة الموظفين</span>
+          <span data-i18n="grid">دليل الموظفين</span>
         </button>
 
         <button id="chatBtn" class="mini-btn" type="button">
@@ -2699,18 +2811,20 @@
     <header class="topbar">
       <!-- Grid View Header Block -->
       <div id="gridHeaderBlock">
-        <h1 id="pageTitle" data-i18n="peopleTitle">شبكة الموظفين</h1>
+        <h1 id="pageTitle" data-i18n="peopleTitle">دليل الموظفين</h1>
         <p id="pageSub" data-i18n="peopleSub">اختر موظفاً أو اضغط عليه مرتين لفتح المحادثة مباشرة</p>
       </div>
 
       <!-- Chat View Header Block (One single header, zero duplication) -->
       <div id="chatHeaderBlock" style="display:none; align-items:center; gap:12px;">
-        <button id="backBtn" class="topbar-back-btn" type="button" title="الرجوع لشبكة الموظفين">
+        <button id="backBtn" class="topbar-back-btn" type="button" data-i18n-title="back" title="العودة للموظفين">
           <svg class="back-arrow-svg" viewBox="0 0 24 24">
             <path d="M19 12H5M12 19l-7-7 7-7"/>
           </svg>
-          <span data-i18n="back">الرجوع للشبكة</span>
+          <span data-i18n="back">العودة للموظفين</span>
         </button>
+
+        <div class="header-divider"></div>
 
         <div class="topbar-chat-profile">
           <div id="chatAvatar" class="chat-avatar-topbar">س</div>
@@ -3193,11 +3307,11 @@ const i18n = {
     brand: "مساعد المهام الذكي",
     brandSub: "مساعد الذكاء الاصطناعي للمهام",
     currentUser: "المستخدم الحالي",
-    grid: "شبكة الموظفين",
+    grid: "دليل الموظفين",
     chat: "المحادثة",
     testsTitle: "رسائل الاختبار (T01 - T10)",
     chooseTest: "-- اختر للتجربة الفورية --",
-    peopleTitle: "شبكة الموظفين",
+    peopleTitle: "دليل الموظفين",
     peopleSub: "اختر موظفاً أو اضغط عليه مرتين لفتح محادثته مباشرة",
     connected: "متصل",
     disconnected: "غير متصل",
@@ -3205,7 +3319,7 @@ const i18n = {
     chooseEmp: "اختر موظفاً",
     dbl: "اضغط مرتين للمحادثة",
     quickChat: "محادثة فورية",
-    back: "الرجوع للشبكة",
+    back: "العودة للموظفين",
     clear: "مسح",
     clearTooltip: "مسح سجل المحادثة",
     chatCleared: "تم مسح سجل المحادثة",
@@ -3233,7 +3347,7 @@ const i18n = {
     inst_rule_3: "<strong>الأسماء غير المعروفة:</strong> إذا طُلبت مهمة لموظف غير موجود (مثل أحمد في T10)، يطلب البوت توضيحاً ولا يخمن.",
     placeholder: "اكتب رسالتك هنا بالعربي...",
     note: "Enter للإرسال · Shift + Enter لسطر جديد",
-    welcome: "أهلاً بك، اكتب طلبك وسينفذه المساعد وفق صلاحيات هذا المستخدم في قاعدة بيانات PostgreSQL.",
+    welcome: "مرحباً بك! أنا مساعد المهام الذكي. كيف يمكنني مساعدتك اليوم في تنظيم المهام أو الإجابة عن استفسارات العمل؟",
     soundOn: "صوت: مفعل",
     soundOff: "صوت: مكتوم",
     copied: "تم نسخ النص إلى الحافظة بنجاح",
@@ -3269,7 +3383,7 @@ const i18n = {
     brand: "Smart Task Assistant",
     brandSub: "Smart AI Assistant",
     currentUser: "Current User",
-    grid: "Employee Grid",
+    grid: "Employee Directory",
     chat: "Chat View",
     testsTitle: "Test Cases (T01 - T10)",
     chooseTest: "-- Select test scenario --",
@@ -3281,7 +3395,7 @@ const i18n = {
     chooseEmp: "Choose Employee",
     dbl: "Double-click to chat",
     quickChat: "Quick Chat",
-    back: "Back to Grid",
+    back: "Back to Employees",
     clear: "Clear",
     clearTooltip: "Clear chat history",
     chatCleared: "Chat history cleared",
@@ -3309,7 +3423,7 @@ const i18n = {
     inst_rule_3: "<strong>Unknown Entities:</strong> If an unknown person is requested (e.g. Ahmed in T10), the bot requests clarification rather than hallucinating an assignment.",
     placeholder: "Type your message here...",
     note: "Enter to send · Shift + Enter for new line",
-    welcome: "Welcome. Send your request and it will be processed using this employee's PostgreSQL permissions.",
+    welcome: "Welcome! I am your Smart Task Assistant. How can I help you today with managing tasks or company policies?",
     soundOn: "Sound: On",
     soundOff: "Sound: Muted",
     copied: "Copied to clipboard successfully",
@@ -3582,6 +3696,7 @@ function applyLang() {
   document.querySelectorAll("[data-i18n]").forEach(el => el.textContent = T(el.dataset.i18n));
   document.querySelectorAll("[data-i18n-html]").forEach(el => el.innerHTML = T(el.dataset.i18nHtml));
   document.querySelectorAll("[data-i18n-placeholder]").forEach(el => el.placeholder = T(el.dataset.i18nPlaceholder));
+  document.querySelectorAll("[data-i18n-title]").forEach(el => el.title = T(el.dataset.i18nTitle));
 
   updateSoundButton();
   renderCustomUserDropdown();
@@ -3594,7 +3709,9 @@ function applyLang() {
 function renderCustomUserDropdown() {
   const current = emp();
   $("triggerAvatar").textContent = name(current).charAt(0);
-  $("triggerText").textContent = `${name(current)} — ${role(current)} (${dept(current)})`;
+  if ($("triggerUserName")) $("triggerUserName").textContent = name(current);
+  if ($("triggerUserMeta")) $("triggerUserMeta").textContent = `${role(current)} · ${dept(current)}`;
+  if ($("triggerText")) $("triggerText").textContent = `${name(current)} — ${role(current)} (${dept(current)})`;
 
   const menu = $("userMenu");
   menu.innerHTML = "";
@@ -3607,7 +3724,10 @@ function renderCustomUserDropdown() {
     item.innerHTML = `
       <div class="opt-left">
         <div class="opt-avatar avatar-${x.deptKey}">${name(x).charAt(0)}</div>
-        <span>${name(x)} <small style="color:var(--muted)">(${dept(x)})</small></span>
+        <div class="opt-meta">
+          <span class="opt-name">${name(x)}</span>
+          <span class="opt-dept">${dept(x)}</span>
+        </div>
       </div>
       <span class="opt-role-badge ${roleBadgeClass}">${role(x)}</span>
     `;
@@ -3683,9 +3803,11 @@ function renderGrid() {
         <div class="person-avatar ${deptAvatarClass}">${name(x).charAt(0)}</div>
         <span class="role-badge-pill ${roleBadgeClass}">${role(x)}</span>
       </div>
-      <h3>${name(x)}</h3>
-      <p class="role-txt">${role(x)}</p>
-      <p class="dept-txt">${dept(x)}</p>
+      <div class="person-info">
+        <h3>${name(x)}</h3>
+        <p class="role-txt">${role(x)}</p>
+        <p class="dept-txt">${dept(x)}</p>
+      </div>
       <div class="card-footer">
         <button class="quick-chat-btn" type="button"><svg class="icon-svg" style="width:11px;height:11px;" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> <span>${T("quickChat")}</span></button>
         <div class="dbl-hint">
