@@ -352,11 +352,16 @@
     /* Side Block */
     .side-block {
       position: relative;
-      z-index: 10;
+      z-index: 5;
       display: flex;
       flex-direction: column;
       gap: 8px;
       text-align: center;
+    }
+
+    .side-block:has(.custom-menu.open),
+    .side-block.is-open {
+      z-index: 5000 !important;
     }
 
     .side-label {
@@ -488,11 +493,11 @@
 
     .test-box {
       position: relative;
-      z-index: 10;
+      z-index: 4;
     }
     .test-box.is-open,
     .test-box:has(.custom-menu.open) {
-      z-index: 1000 !important;
+      z-index: 5000 !important;
     }
 
     .custom-select-wrap {
@@ -500,7 +505,7 @@
     }
     .custom-select-wrap.is-open,
     .custom-select-wrap:has(.custom-menu.open) {
-      z-index: 1000 !important;
+      z-index: 5000 !important;
     }
 
     .custom-menu {
@@ -4415,6 +4420,7 @@ function closeAllMenus() {
   $("userTrigger")?.classList.remove("open");
   $("userMenu")?.classList.remove("open");
   $("userSelectWrap")?.classList.remove("is-open");
+  $("userSelectWrap")?.closest(".side-block")?.classList.remove("is-open");
   $("testTrigger")?.classList.remove("open");
   $("testMenu")?.classList.remove("open");
   $("testSelectWrap")?.classList.remove("is-open");
@@ -4429,6 +4435,8 @@ $("userTrigger").onclick = (e) => {
   if (!isOpen) {
     $("userTrigger").classList.add("open");
     $("userMenu").classList.add("open");
+    $("userSelectWrap")?.classList.add("is-open");
+    $("userSelectWrap")?.closest(".side-block")?.classList.add("is-open");
   }
 };
 
