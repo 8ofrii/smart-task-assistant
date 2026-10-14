@@ -295,4 +295,37 @@ router.get("/api/status", async (_req, res) => {
   });
 });
 
+router.get("/api/settings", (_req, res) => {
+  return res.json({
+    ok: true,
+    timezone: APP_TIMEZONE,
+    now: DateTime.now().setZone(APP_TIMEZONE).toISO(),
+    llmProvider: config.llmProvider,
+    model: config.llmProvider === "gemini" ? config.geminiModel : config.openaiModel
+  });
+});
+
+router.post("/api/settings", (req, res) => {
+  try {
+    const { model, llmProvider } = req.body;
+    if (model && typeof model === "string") {
+      config.openaiModel = model.trim();
+      if (config.llmProvider === "gemini") {
+        config.geminiModel = model.trim();
+      }
+    }
+    if (llmProvider && ["openai", "openrouter", "gemini", "fallback"].includes(llmProvider)) {
+      config.llmProvider = llmProvider;
+    }
+    return res.json({
+      ok: true,
+      message: "Settings updated successfully",
+      llmProvider: config.llmProvider,
+      model: config.llmProvider === "gemini" ? config.geminiModel : config.openaiModel
+    });
+  } catch (error) {
+    return res.status(500).json({ ok: false, error: "Failed to update settings" });
+  }
+});
+
 export default router;
