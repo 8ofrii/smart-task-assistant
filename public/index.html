@@ -720,25 +720,26 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
     }
 
     .icon-btn {
-      height: 36px;
-      padding: 0 11px;
-      border: 1px solid var(--line);
-      border-radius: 11px;
+      height: 32px;
+      padding: 0 13px;
+      border: 1px solid var(--line-strong);
+      border-radius: 999px;
       color: var(--text);
       cursor: pointer;
       background: var(--panel-solid);
-      font-size: 12px;
+      font-size: 11.5px;
       font-weight: 700;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
       transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+      white-space: nowrap;
     }
 
     .icon-btn:hover {
@@ -749,11 +750,48 @@
       box-shadow: 0 4px 12px rgba(0, 150, 245, 0.15);
     }
 
-    .icon-btn-danger:hover {
-      background: rgba(239, 68, 68, 0.09);
-      border-color: var(--danger);
-      color: var(--danger);
-      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);
+    /* Sidebar Clear DB Action */
+    .side-action-box {
+      margin-top: 4px;
+    }
+
+    .side-clear-btn {
+      width: 100%;
+      height: 34px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: rgba(239, 68, 68, 0.18);
+      color: #ffffff;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .side-clear-btn:hover {
+      background: rgba(239, 68, 68, 0.32);
+      border-color: rgba(255, 255, 255, 0.5);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3);
+    }
+
+    html[data-theme="dark"] .side-clear-btn {
+      background: rgba(239, 68, 68, 0.14);
+      border-color: rgba(239, 68, 68, 0.3);
+      color: #fca5a5;
+    }
+
+    html[data-theme="dark"] .side-clear-btn:hover {
+      background: rgba(239, 68, 68, 0.26);
+      border-color: #ef4444;
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4);
     }
 
     .icon-svg {
@@ -2020,7 +2058,6 @@
       <div class="brand-text">
         <div class="company-badge">DOMIRA</div>
         <h2 data-i18n="brand">مساعد المهام الذكي</h2>
-        <small data-i18n="brandSub">Smart AI Assistant</small>
       </div>
     </div>
 
@@ -2083,7 +2120,17 @@
       </div>
     </div>
 
-    <!-- Creator Attribution (Single Clean Mention) -->
+    <!-- Quick Database Action in Sidebar -->
+    <div class="side-action-box">
+      <button id="clearDbBtn" class="side-clear-btn" type="button" title="مسح وتفريغ قاعدة البيانات التجريبية">
+        <svg class="icon-svg" viewBox="0 0 24 24">
+          <path d="M3 6h18"/>
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+        </svg>
+        <span data-i18n="clearDb">تفريغ القاعدة</span>
+      </button>
+    </div>
+
     <div class="footer">
       <span>AI Engineering Assessment Task</span>
       <div class="creator-tag">Made by Mahmoud Abd El-Ghaffar</div>
@@ -2121,15 +2168,6 @@
             <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
           </svg>
           <span data-i18n="instructions">التعليمات</span>
-        </button>
-
-        <!-- Clear Database Button -->
-        <button id="clearDbBtn" class="icon-btn icon-btn-danger" type="button" title="مسح وتفريغ قاعدة البيانات التجريبية">
-          <svg class="icon-svg" viewBox="0 0 24 24">
-            <path d="M3 6h18"/>
-            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-          </svg>
-          <span data-i18n="clearDb">تفريغ القاعدة</span>
         </button>
 
         <!-- Day / Night Animated Sky Toggle Switch (Sun & Cloud / Moon & Stars) -->
