@@ -1977,6 +1977,138 @@
       opacity: 1;
     }
 
+    
+    /* Sidebar Scrolling & Setting Block */
+    .sidebar {
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+    }
+
+    .sidebar::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .sidebar::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.25);
+      border-radius: 4px;
+    }
+
+    .side-settings-block {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .sidebar-settings-card {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      background: rgba(0, 0, 0, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 16px;
+      padding: 10px;
+      backdrop-filter: blur(8px);
+    }
+
+    .side-kpi-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 10px;
+      border-radius: 11px;
+      background: rgba(255, 255, 255, 0.10);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      transition: all 0.2s ease;
+      text-align: right;
+    }
+
+    html[dir="ltr"] .side-kpi-item {
+      text-align: left;
+    }
+
+    .side-kpi-item:hover {
+      background: rgba(255, 255, 255, 0.18);
+      border-color: rgba(255, 255, 255, 0.35);
+      transform: translateY(-1px);
+    }
+
+    .side-kpi-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    .side-kpi-icon .icon-svg {
+      width: 14px;
+      height: 14px;
+      stroke-width: 2.2;
+    }
+
+    .side-kpi-blue {
+      background: rgba(0, 150, 245, 0.28);
+      color: #bae6fd;
+      border: 1px solid rgba(56, 189, 248, 0.4);
+    }
+
+    .side-kpi-purple {
+      background: rgba(139, 92, 246, 0.28);
+      color: #ddd6fe;
+      border: 1px solid rgba(167, 139, 250, 0.4);
+    }
+
+    .side-kpi-green {
+      background: rgba(16, 185, 129, 0.28);
+      color: #a7f3d0;
+      border: 1px solid rgba(52, 211, 153, 0.4);
+    }
+
+    .side-kpi-amber {
+      background: rgba(245, 158, 11, 0.28);
+      color: #fef08a;
+      border: 1px solid rgba(251, 191, 36, 0.4);
+    }
+
+    .side-kpi-info {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      line-height: 1.25;
+    }
+
+    .side-kpi-info strong {
+      font-size: 11.5px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.1px;
+    }
+
+    .side-kpi-info span {
+      font-size: 9.5px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.82);
+    }
+
+    .toast-icon-wrap {
+      width: 24px;
+      height: 24px;
+      border-radius: 7px;
+      background: rgba(0, 150, 245, 0.12);
+      color: var(--brand);
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    .toast-icon-wrap .icon-svg {
+      width: 14px;
+      height: 14px;
+    }
+
     /* Complete Dark Theme UI Polish */
     html[data-theme="dark"] .topbar {
       background: rgba(13, 21, 33, 0.95);
@@ -2208,7 +2340,7 @@
 
 <!-- Floating Toast -->
 <div id="toastNotification">
-  <span id="toastIcon">✨</span>
+  <span id="toastIcon" class="toast-icon-wrap"></span>
   <span id="toastMsg">تمت العملية بنجاح</span>
 </div>
 
@@ -2285,15 +2417,86 @@
       </div>
     </div>
 
-    <!-- Quick Database Action in Sidebar -->
-    <div class="side-action-box">
-      <button id="clearDbBtn" class="side-clear-btn" type="button" title="مسح وتفريغ قاعدة البيانات التجريبية">
-        <svg class="icon-svg" viewBox="0 0 24 24">
-          <path d="M3 6h18"/>
-          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-        </svg>
-        <span data-i18n="clearDb">تفريغ القاعدة</span>
-      </button>
+        <!-- Settings & System Specs Section in Sidebar -->
+    <div class="side-block side-settings-block">
+      <label class="side-label">
+        <span style="display:inline-flex;align-items:center;gap:6px;">
+          <svg class="icon-svg" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+          <span data-i18n="settingsTitle">الإعدادات</span>
+        </span>
+      </label>
+
+      <div class="sidebar-settings-card">
+        <!-- 1. Database (PostgreSQL) Metric -->
+        <div class="side-kpi-item">
+          <div class="side-kpi-icon side-kpi-blue">
+            <svg class="icon-svg" viewBox="0 0 24 24">
+              <ellipse cx="12" cy="5" rx="9" ry="3"/>
+              <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
+              <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+            </svg>
+          </div>
+          <div class="side-kpi-info">
+            <strong data-i18n="kpiDbVal">6 موظفين</strong>
+            <span data-i18n="kpiDbSub">قاعدة بيانات PostgreSQL</span>
+          </div>
+        </div>
+
+        <!-- 2. Security Roles (RBAC) Metric -->
+        <div class="side-kpi-item">
+          <div class="side-kpi-icon side-kpi-purple">
+            <svg class="icon-svg" viewBox="0 0 24 24">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              <polyline points="9 12 11 14 15 10"/>
+            </svg>
+          </div>
+          <div class="side-kpi-info">
+            <strong data-i18n="kpiRbacVal">3 صلاحيات</strong>
+            <span data-i18n="kpiRbacSub">حماية RBAC مشددة</span>
+          </div>
+        </div>
+
+        <!-- 3. AI Model Metric -->
+        <div class="side-kpi-item">
+          <div class="side-kpi-icon side-kpi-green">
+            <svg class="icon-svg" viewBox="0 0 24 24">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+            </svg>
+          </div>
+          <div class="side-kpi-info">
+            <strong data-i18n="kpiAiVal">GPT-4o</strong>
+            <span data-i18n="kpiAiSub">تحليل نصوص وأوامر</span>
+          </div>
+        </div>
+
+        <!-- 4. Date Scheduling (Friday rule) -->
+        <div class="side-kpi-item">
+          <div class="side-kpi-icon side-kpi-amber">
+            <svg class="icon-svg" viewBox="0 0 24 24">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+          </div>
+          <div class="side-kpi-info">
+            <strong data-i18n="kpiFridayVal">ترحيل الجمعة</strong>
+            <span data-i18n="kpiFridaySub">قاعدة ترحيل الأيام</span>
+          </div>
+        </div>
+
+        <!-- Clear DB Action inside Settings -->
+        <button id="clearDbBtn" class="side-clear-btn" type="button" title="مسح وتفريغ قاعدة البيانات التجريبية">
+          <svg class="icon-svg" viewBox="0 0 24 24">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+          </svg>
+          <span data-i18n="clearDb">تفريغ القاعدة</span>
+        </button>
+      </div>
     </div>
 
     <div class="footer">
@@ -2373,38 +2576,6 @@
     <div class="content">
       <!-- VIEW 1: Employee Grid -->
       <section id="peoplePage" class="page people-page active">
-        <!-- Live Executive KPI Stat Chips -->
-        <div class="kpi-row">
-          <div class="kpi-card">
-            <div class="kpi-icon kpi-icon-blue">👥</div>
-            <div class="kpi-data">
-              <span class="kpi-val">6 موظفين</span>
-              <span class="kpi-sub">قاعدة بيانات PostgreSQL</span>
-            </div>
-          </div>
-          <div class="kpi-card">
-            <div class="kpi-icon kpi-icon-purple">🛡️</div>
-            <div class="kpi-data">
-              <span class="kpi-val">3 صلاحيات</span>
-              <span class="kpi-sub">حماية RBAC مشددة</span>
-            </div>
-          </div>
-          <div class="kpi-card">
-            <div class="kpi-icon kpi-icon-green">⚡</div>
-            <div class="kpi-data">
-              <span class="kpi-val">GPT-4o</span>
-              <span class="kpi-sub">تحليل نصوص وأوامر</span>
-            </div>
-          </div>
-          <div class="kpi-card">
-            <div class="kpi-icon kpi-icon-amber">📅</div>
-            <div class="kpi-data">
-              <span class="kpi-val">ترحيل الجمعة</span>
-              <span class="kpi-sub">قاعدة ترحيل الأيام</span>
-            </div>
-          </div>
-        </div>
-
         <div id="peopleGrid" class="people-grid"></div>
       </section>
 
@@ -2620,7 +2791,7 @@ const i18n = {
     working: "جارٍ المعالجة...",
     chooseEmp: "اختر موظفاً",
     dbl: "اضغط مرتين للمحادثة",
-    quickChat: "محادثة فورية ⚡",
+    quickChat: "محادثة فورية",
     back: "رجوع",
     clear: "مسح",
     clearTooltip: "مسح سجل المحادثة",
@@ -2649,10 +2820,19 @@ const i18n = {
     inst_rule_3: "<strong>الأسماء غير المعروفة:</strong> إذا طُلبت مهمة لموظف غير موجود (مثل أحمد في T10)، يطلب البوت توضيحاً ولا يخمن.",
     placeholder: "اكتب رسالتك هنا بالعربي...",
     note: "Enter للإرسال · Shift + Enter لسطر جديد",
-    welcome: "أهلاً بك 👋 اكتب طلبك وسينفذه المساعد وفق صلاحيات هذا المستخدم في قاعدة بيانات PostgreSQL.",
+    welcome: "أهلاً بك، اكتب طلبك وسينفذه المساعد وفق صلاحيات هذا المستخدم في قاعدة بيانات PostgreSQL.",
     soundOn: "صوت: مفعل",
     soundOff: "صوت: مكتوم",
-    copied: "تم نسخ النص إلى الحافظة! ✨"
+    copied: "تم نسخ النص إلى الحافظة بنجاح",
+    settingsTitle: "الإعدادات",
+    kpiDbVal: "6 موظفين",
+    kpiDbSub: "قاعدة بيانات PostgreSQL",
+    kpiRbacVal: "3 صلاحيات",
+    kpiRbacSub: "حماية RBAC مشددة",
+    kpiAiVal: "GPT-4o",
+    kpiAiSub: "تحليل نصوص وأوامر",
+    kpiFridayVal: "ترحيل الجمعة",
+    kpiFridaySub: "قاعدة ترحيل الأيام"
   },
   en: {
     brand: "Smart Task Assistant",
@@ -2669,7 +2849,7 @@ const i18n = {
     working: "Processing...",
     chooseEmp: "Choose Employee",
     dbl: "Double-click to chat",
-    quickChat: "Quick Chat ⚡",
+    quickChat: "Quick Chat",
     back: "Back",
     clear: "Clear",
     clearTooltip: "Clear chat history",
@@ -2698,10 +2878,19 @@ const i18n = {
     inst_rule_3: "<strong>Unknown Entities:</strong> If an unknown person is requested (e.g. Ahmed in T10), the bot requests clarification rather than hallucinating an assignment.",
     placeholder: "Type your message here...",
     note: "Enter to send · Shift + Enter for new line",
-    welcome: "Welcome 👋 Send your request and it will be processed using this employee's PostgreSQL permissions.",
+    welcome: "Welcome. Send your request and it will be processed using this employee's PostgreSQL permissions.",
     soundOn: "Sound: On",
     soundOff: "Sound: Muted",
-    copied: "Copied to clipboard! ✨"
+    copied: "Copied to clipboard successfully",
+    settingsTitle: "Settings",
+    kpiDbVal: "6 Employees",
+    kpiDbSub: "PostgreSQL Database",
+    kpiRbacVal: "3 Roles (RBAC)",
+    kpiRbacSub: "Strict Security Policy",
+    kpiAiVal: "GPT-4o",
+    kpiAiSub: "NLP & Reasoning",
+    kpiFridayVal: "Friday Rollover",
+    kpiFridaySub: "Rule R4 to Saturday"
   }
 };
 
@@ -2895,10 +3084,22 @@ function updateConfetti() {
    TOAST NOTIFICATION ENGINE
    ============================================================ */
 let toastTimeout = null;
-function showToast(message, icon = "✨") {
+const toastIcons = {
+  check: '<svg class="icon-svg" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>',
+  trash: '<svg class="icon-svg" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>',
+  copy: '<svg class="icon-svg" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>',
+  alert: '<svg class="icon-svg" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+  globe: '<svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>',
+  theme: '<svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>'
+};
+
+function showToast(message, iconKey = "check") {
   const toast = $("toastNotification");
   $("toastMsg").textContent = message;
-  $("toastIcon").textContent = icon;
+  const iconWrap = $("toastIcon");
+  if (iconWrap) {
+    iconWrap.innerHTML = toastIcons[iconKey] || toastIcons.check;
+  }
   toast.classList.add("show");
   if (toastTimeout) clearTimeout(toastTimeout);
   toastTimeout = setTimeout(() => {
@@ -3018,7 +3219,7 @@ function renderGrid() {
       <p class="role-txt">${role(x)}</p>
       <p class="dept-txt">${dept(x)}</p>
       <div class="card-footer">
-        <button class="quick-chat-btn" type="button">${T("quickChat")}</button>
+        <button class="quick-chat-btn" type="button"><svg class="icon-svg" style="width:11px;height:11px;" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> <span>${T("quickChat")}</span></button>
         <div class="dbl-hint">
           <svg class="icon-svg" style="width:11px;height:11px;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
           <span>${T("dbl")}</span>
@@ -3124,7 +3325,7 @@ function resetChat() {
 $("clearChatBtn").onclick = () => {
   playSound("click");
   resetChat();
-  showToast(T("chatCleared"), "🧹");
+  showToast(T("chatCleared"), "trash");
 };
 
 // Add Message Bubble with Tags & Copy Action
@@ -3160,7 +3361,7 @@ function add(text, type, meta = "", data = null, status = 200) {
       e.stopPropagation();
       navigator.clipboard.writeText(text);
       playSound("click");
-      showToast(T("copied"), "📋");
+      showToast(T("copied"), "copy");
     };
     bubble.appendChild(copyBtn);
 
@@ -3393,12 +3594,12 @@ $("clearDbBtn").onclick = async () => {
     const r = await fetch("/api/reset", { method: "POST" });
     const d = await r.json();
     playSound("success");
-    showToast(T("clearDbSuccess"), "🗑️");
+    showToast(T("clearDbSuccess"), "trash");
     resetChat();
     checkDbHealth();
   } catch (e) {
     playSound("reject");
-    showToast(lang === "ar" ? "تعذر تفريغ قاعدة البيانات" : "Failed to clear database", "⚠️");
+    showToast(lang === "ar" ? "تعذر تفريغ قاعدة البيانات" : "Failed to clear database", "alert");
     checkDbHealth();
   }
 };
@@ -3470,7 +3671,7 @@ $("langBtn").onclick = () => {
   lang = lang === "ar" ? "en" : "ar";
   localStorage.setItem("ui-lang", lang);
   applyLang();
-  showToast(lang === "ar" ? "تم التحويل إلى العربية 🌐" : "Switched to English 🌐", "🌐");
+  showToast(lang === "ar" ? "تم التحويل إلى العربية" : "Switched to English", "globe");
 };
 
 $("themeBtn").onclick = () => {
@@ -3478,9 +3679,9 @@ $("themeBtn").onclick = () => {
   const nextTheme = theme === "light" ? "dark" : "light";
   setTheme(nextTheme);
   const msg = lang === "ar"
-    ? (nextTheme === "dark" ? "الوضع الليلي 🌙" : "الوضع النهاري ☀️")
-    : (nextTheme === "dark" ? "Dark Mode 🌙" : "Light Mode ☀️");
-  showToast(msg, nextTheme === "dark" ? "🌙" : "☀️");
+    ? (nextTheme === "dark" ? "الوضع الليلي" : "الوضع النهاري")
+    : (nextTheme === "dark" ? "Dark Mode" : "Light Mode");
+  showToast(msg, "theme");
 };
 
 $("chatForm").onsubmit = e => {
