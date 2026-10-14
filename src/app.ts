@@ -12,7 +12,16 @@ const publicDir = path.resolve(__dirname, "../public");
 
 app.disable("x-powered-by");
 app.use(express.json({ limit: "32kb" }));
-app.use(express.static(publicDir));
+app.use(express.static(publicDir, {
+  etag: true,
+  setHeaders: (res, filePath) => {
+    if (filePath.endsWith(".html")) {
+      res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+      res.setHeader("Pragma", "no-cache");
+      res.setHeader("Expires", "0");
+    }
+  }
+}));
 
 app.get("/health", async (_req, res) => {
   try {
