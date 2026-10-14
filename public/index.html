@@ -2099,6 +2099,13 @@
       cursor: not-allowed;
     }
 
+    .send-btn .icon-svg {
+      width: 17px;
+      height: 17px;
+      stroke-width: 2.2;
+      transform: translate(-1px, 1px);
+    }
+
     .composer-note {
       font-size: 9.5px;
       color: var(--muted);
@@ -3131,7 +3138,7 @@
             <div class="input-box">
               <textarea id="messageInput" rows="1" data-i18n-placeholder="placeholder" placeholder="اكتب رسالتك هنا بالعربي..."></textarea>
               <button id="sendBtn" class="send-btn" type="submit" title="إرسال">
-                <svg class="icon-svg" viewBox="0 0 24 24" style="transform: rotate(180deg)">
+                <svg class="icon-svg" viewBox="0 0 24 24">
                   <line x1="22" y1="2" x2="11" y2="13"/>
                   <polygon points="22 2 15 22 11 13 2 9 22 2"/>
                 </svg>
