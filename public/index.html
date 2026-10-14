@@ -767,6 +767,134 @@
       flex-shrink: 0;
     }
 
+    /* Day / Night Animated Sky Toggle Switch (Sun & Cloud / Moon & Stars) */
+    .theme-toggle-switch {
+      position: relative;
+      width: 64px;
+      height: 32px;
+      border-radius: 999px;
+      border: 1.5px solid rgba(0, 0, 0, 0.12);
+      cursor: pointer;
+      overflow: hidden;
+      padding: 0;
+      background: linear-gradient(180deg, #42a5f5 0%, #1e88e5 100%);
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.18), 0 2px 6px rgba(0, 0, 0, 0.08);
+      transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    html[data-theme="dark"] .theme-toggle-switch {
+      background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+      border-color: rgba(255, 255, 255, 0.22);
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.4);
+    }
+
+    .sky-scene {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    /* Day Clouds */
+    .sky-clouds {
+      position: absolute;
+      right: 4px;
+      bottom: 2px;
+      width: 30px;
+      height: 18px;
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.35s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .cloud-svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+      filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.15));
+    }
+
+    html[data-theme="dark"] .sky-clouds {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+
+    /* Night Stars */
+    .sky-stars {
+      position: absolute;
+      left: 6px;
+      top: 0;
+      bottom: 0;
+      width: 28px;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: opacity 0.35s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    html[data-theme="dark"] .sky-stars {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .star {
+      position: absolute;
+      background: #ffffff;
+      border-radius: 50%;
+      box-shadow: 0 0 3px #ffffff;
+      animation: starTwinkle 2.2s infinite ease-in-out alternate;
+    }
+
+    .star.s1 { width: 3px; height: 3px; top: 7px; left: 6px; animation-delay: 0s; }
+    .star.s2 { width: 2px; height: 2px; top: 18px; left: 9px; animation-delay: 0.4s; }
+    .star.s3 { width: 2.5px; height: 2.5px; top: 12px; left: 18px; animation-delay: 0.8s; }
+    .star.s4 { width: 1.5px; height: 1.5px; top: 6px; left: 22px; animation-delay: 1.2s; }
+    .star.s5 { width: 1.8px; height: 1.8px; top: 22px; left: 19px; animation-delay: 0.6s; }
+
+    @keyframes starTwinkle {
+      0% { opacity: 0.3; transform: scale(0.8); }
+      100% { opacity: 1; transform: scale(1.2); }
+    }
+
+    /* Celestial Knob: Sun (Day) -> Moon (Night) */
+    .celestial-body {
+      position: absolute;
+      top: 3.5px;
+      left: 4px;
+      width: 23px;
+      height: 23px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #fff59d 0%, #fbc02d 60%, #f57f17 100%);
+      box-shadow: 0 0 10px rgba(251, 192, 45, 0.7), inset -1px -1px 2px rgba(180, 83, 9, 0.4);
+      transition: transform 0.38s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.38s ease, box-shadow 0.38s ease;
+      z-index: 2;
+    }
+
+    html[data-theme="dark"] .celestial-body {
+      transform: translateX(33px);
+      background: radial-gradient(circle at 35% 35%, #ffffff 0%, #ede8d5 60%, #d5ceb7 100%);
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.4), inset -1px -1px 2px rgba(120, 115, 95, 0.4);
+    }
+
+    /* Moon Craters */
+    .crater {
+      position: absolute;
+      background: #b8b094;
+      border-radius: 50%;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      box-shadow: inset 0.5px 0.5px 1px rgba(70, 65, 50, 0.4);
+    }
+
+    html[data-theme="dark"] .crater {
+      opacity: 0.85;
+    }
+
+    .crater.c1 { width: 5px; height: 5px; top: 4px; left: 5px; }
+    .crater.c2 { width: 3.5px; height: 3.5px; top: 12px; left: 12px; }
+    .crater.c3 { width: 2.5px; height: 2.5px; top: 13px; left: 4px; }
+
     /* Status Pill with Pulsing Radar Effect */
     .status-pill {
       display: inline-flex;
@@ -1666,23 +1794,24 @@
       padding-left: 18px;
     }
 
-    /* Floating Toast Notification */
+    /* Floating Toast Notification - Bottom Right Popup */
     #toastNotification {
       position: fixed;
       bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%) translateY(80px);
-      padding: 10px 18px;
+      right: 24px;
+      left: auto;
+      transform: translateY(40px) scale(0.95);
+      padding: 12px 20px;
       border-radius: 14px;
       background: var(--panel-solid);
-      border: 1px solid var(--line);
-      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--line-strong);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.22);
       color: var(--text);
       font-size: 13px;
       font-weight: 800;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 9px;
       z-index: 10000;
       pointer-events: none;
       opacity: 0;
@@ -1690,7 +1819,7 @@
     }
 
     #toastNotification.show {
-      transform: translateX(-50%) translateY(0);
+      transform: translateY(0) scale(1);
       opacity: 1;
     }
 
@@ -2003,13 +2132,36 @@
           <span data-i18n="clearDb">تفريغ القاعدة</span>
         </button>
 
-        <button id="langBtn" class="icon-btn" type="button">EN</button>
-        
-        <button id="themeBtn" class="icon-btn" type="button" title="تبديل الثيم">
-          <!-- Sun / Moon SVG Icon -->
-          <svg id="themeIcon" class="icon-svg" viewBox="0 0 24 24">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        <!-- Day / Night Animated Sky Toggle Switch (Sun & Cloud / Moon & Stars) -->
+        <button id="themeBtn" class="theme-toggle-switch" type="button" aria-label="Toggle Theme" title="تبديل الثيم / Toggle Theme">
+          <div class="sky-scene">
+            <div class="sky-stars">
+              <span class="star s1"></span>
+              <span class="star s2"></span>
+              <span class="star s3"></span>
+              <span class="star s4"></span>
+              <span class="star s5"></span>
+            </div>
+            <div class="sky-clouds">
+              <svg class="cloud-svg" viewBox="0 0 32 18">
+                <path d="M10 16h16a5 5 0 0 0 0-10 6 6 0 0 0-11-2 4 4 0 0 0-5 6 3 3 0 0 0 0 6z" fill="#ffffff" fill-opacity="0.95"/>
+              </svg>
+            </div>
+          </div>
+          <div class="celestial-body">
+            <div class="crater c1"></div>
+            <div class="crater c2"></div>
+            <div class="crater c3"></div>
+          </div>
+        </button>
+
+        <button id="langBtn" class="icon-btn" type="button" title="Language / اللغة">
+          <svg class="icon-svg" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="2" y1="12" x2="22" y2="12"/>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
           </svg>
+          <span id="langText">EN</span>
         </button>
       </div>
     </header>
@@ -2126,12 +2278,12 @@
           <span data-i18n="secPolicy">بنود سياسة الشركة المعتمدة (المصدر الوحيد للإجابات)</span>
         </h4>
         <ul class="instruction-points">
-          <li><strong>1. أوقات العمل:</strong> يبدأ الدوام من الأحد إلى الخميس، من الساعة 8:00 صباحاً حتى 4:00 مساءً.</li>
-          <li><strong>2. طلب الإجازة:</strong> يجب تقديم طلب الإجازة الاعتيادية قبل 5 أيام عمل على الأقل، وتتطلب موافقة المشرف المباشر.</li>
-          <li><strong>3. الإجازة المرضية:</strong> تتطلب تقريراً طبياً معتمداً خلال 48 ساعة من الغياب.</li>
-          <li><strong>4. العمل عن بُعد:</strong> يُسمح بيوم واحد أسبوعياً بعد موافقة المشرف، بشرط إكمال فترة التجربة (3 أشهر).</li>
-          <li><strong>5. فترة التجربة:</strong> مدتها 3 أشهر قابلة للتمديد لـ 3 أشهر إضافية بموافقة الطرفين.</li>
-          <li><strong>6. تقييم الأداء:</strong> يتم مرتين سنوياً (يونيو وديسمبر).</li>
+          <li data-i18n-html="inst_pol_1"><strong>1. أوقات العمل:</strong> يبدأ الدوام من الأحد إلى الخميس، من الساعة 8:00 صباحاً حتى 4:00 مساءً.</li>
+          <li data-i18n-html="inst_pol_2"><strong>2. طلب الإجازة:</strong> يجب تقديم طلب الإجازة الاعتيادية قبل 5 أيام عمل على الأقل، وتتطلب موافقة المشرف المباشر.</li>
+          <li data-i18n-html="inst_pol_3"><strong>3. الإجازة المرضية:</strong> تتطلب تقريراً طبياً معتمداً خلال 48 ساعة من الغياب.</li>
+          <li data-i18n-html="inst_pol_4"><strong>4. العمل عن بُعد:</strong> يُسمح بيوم واحد أسبوعياً بعد موافقة المشرف، بشرط إكمال فترة التجربة (3 أشهر).</li>
+          <li data-i18n-html="inst_pol_5"><strong>5. فترة التجربة:</strong> مدتها 3 أشهر قابلة للتمديد لـ 3 أشهر إضافية بموافقة الطرفين.</li>
+          <li data-i18n-html="inst_pol_6"><strong>6. تقييم الأداء:</strong> يتم مرتين سنوياً (يونيو وديسمبر).</li>
         </ul>
       </div>
 
@@ -2142,10 +2294,10 @@
           <span data-i18n="secPerms">صلاحيات الأدوار وقواعد الأمان</span>
         </h4>
         <ul class="instruction-points">
-          <li><strong>الموظف (Employee):</strong> يسجل مهام لنفسه فقط، ويرى مهامه فقط. يُرفض فوراً إذا حاول إسناد مهمة لغيره (403 Forbidden).</li>
-          <li><strong>المشرف (Supervisor):</strong> يسجل مهام لنفسه ولموظفي قسمه فقط. يُرفض إذا حاول إسناد مهمة لموظف بقسم آخر (403 Forbidden).</li>
-          <li><strong>المدير (Manager):</strong> يسجل ويرى مهام جميع موظفي الشركة بلا قيود.</li>
-          <li><strong>أمان الصلاحيات:</strong> تُطبق الصلاحيات برمجياً عبر الكود وقاعدة بيانات PostgreSQL، والدور يُقرأ من السجل لا من رسالة المستخدم (صد محاولات Prompt Injection مثل T08).</li>
+          <li data-i18n-html="inst_perm_1"><strong>الموظف (Employee):</strong> يسجل مهام لنفسه فقط، ويرى مهامه فقط. يُرفض فوراً إذا حاول إسناد مهمة لغيره (403 Forbidden).</li>
+          <li data-i18n-html="inst_perm_2"><strong>المشرف (Supervisor):</strong> يسجل مهام لنفسه ولموظفي قسمه فقط. يُرفض إذا حاول إسناد مهمة لموظف بقسم آخر (403 Forbidden).</li>
+          <li data-i18n-html="inst_perm_3"><strong>المدير (Manager):</strong> يسجل ويرى مهام جميع موظفي الشركة بلا قيود.</li>
+          <li data-i18n-html="inst_perm_4"><strong>أمان الصلاحيات:</strong> تُطبق الصلاحيات برمجياً عبر الكود وقاعدة بيانات PostgreSQL، والدور يُقرأ من السجل لا من رسالة المستخدم (صد محاولات Prompt Injection مثل T08).</li>
         </ul>
       </div>
 
@@ -2156,9 +2308,9 @@
           <span data-i18n="secRules">قواعد التواريخ ومنع التأليف</span>
         </h4>
         <ul class="instruction-points">
-          <li><strong>قاعدة الجمعة:</strong> إذا وافق تاريخ المهمة يوم جمعة، تُرحّل تلقائياً إلى السبت بنفس الوقت مع إشعار صريح في رد البوت.</li>
-          <li><strong>منع التأليف والهلوسة:</strong> إذا سُئل البوت عن معلومة غير موجودة بنص السياسة (مثل بدل السكن)، يجيب بأنها غير متوفرة فوراً دون تخمين.</li>
-          <li><strong>الأسماء غير المعروفة:</strong> إذا طُلبت مهمة لموظف غير موجود (مثل أحمد في T10)، يطلب البوت توضيحاً ولا يخمن.</li>
+          <li data-i18n-html="inst_rule_1"><strong>قاعدة الجمعة:</strong> إذا وافق تاريخ المهمة يوم جمعة، تُرحّل تلقائياً إلى السبت بنفس الوقت مع إشعار صريح في رد البوت.</li>
+          <li data-i18n-html="inst_rule_2"><strong>منع التأليف والهلوسة:</strong> إذا سُئل البوت عن معلومة غير موجودة بنص السياسة (مثل بدل السكن)، يجيب بأنها غير متوفرة فوراً دون تخمين.</li>
+          <li data-i18n-html="inst_rule_3"><strong>الأسماء غير المعروفة:</strong> إذا طُلبت مهمة لموظف غير موجود (مثل أحمد في T10)، يطلب البوت توضيحاً ولا يخمن.</li>
         </ul>
       </div>
     </div>
@@ -2215,6 +2367,19 @@ const i18n = {
     secPolicy: "بنود سياسة الشركة المعتمدة (المصدر الوحيد للإجابات)",
     secPerms: "صلاحيات الأدوار وقواعد الأمان",
     secRules: "قواعد التواريخ ومنع التأليف",
+    inst_pol_1: "<strong>1. أوقات العمل:</strong> يبدأ الدوام من الأحد إلى الخميس، من الساعة 8:00 صباحاً حتى 4:00 مساءً.",
+    inst_pol_2: "<strong>2. طلب الإجازة:</strong> يجب تقديم طلب الإجازة الاعتيادية قبل 5 أيام عمل على الأقل، وتتطلب موافقة المشرف المباشر.",
+    inst_pol_3: "<strong>3. الإجازة المرضية:</strong> تتطلب تقريراً طبياً معتمداً خلال 48 ساعة من الغياب.",
+    inst_pol_4: "<strong>4. العمل عن بُعد:</strong> يُسمح بيوم واحد أسبوعياً بعد موافقة المشرف، بشرط إكمال فترة التجربة (3 أشهر).",
+    inst_pol_5: "<strong>5. فترة التجربة:</strong> مدتها 3 أشهر قابلة للتمديد لـ 3 أشهر إضافية بموافقة الطرفين.",
+    inst_pol_6: "<strong>6. تقييم الأداء:</strong> يتم مرتين سنوياً (يونيو وديسمبر).",
+    inst_perm_1: "<strong>الموظف (Employee):</strong> يسجل مهام لنفسه فقط، ويرى مهامه فقط. يُرفض فوراً إذا حاول إسناد مهمة لغيره (403 Forbidden).",
+    inst_perm_2: "<strong>المشرف (Supervisor):</strong> يسجل مهام لنفسه ولموظفي قسمه فقط. يُرفض إذا حاول إسناد مهمة لموظف بقسم آخر (403 Forbidden).",
+    inst_perm_3: "<strong>المدير (Manager):</strong> يسجل ويرى مهام جميع موظفي الشركة بلا قيود.",
+    inst_perm_4: "<strong>أمان الصلاحيات:</strong> تُطبق الصلاحيات برمجياً عبر الكود وقاعدة بيانات PostgreSQL، والدور يُقرأ من السجل لا من رسالة المستخدم (صد محاولات Prompt Injection مثل T08).",
+    inst_rule_1: "<strong>قاعدة الجمعة:</strong> إذا وافق تاريخ المهمة يوم جمعة، تُرحّل تلقائياً إلى السبت بنفس الوقت مع إشعار صريح في رد البوت.",
+    inst_rule_2: "<strong>منع التأليف والهلوسة:</strong> إذا سُئل البوت عن معلومة غير موجودة بنص السياسة (مثل بدل السكن)، يجيب بأنها غير متوفرة فوراً دون تخمين.",
+    inst_rule_3: "<strong>الأسماء غير المعروفة:</strong> إذا طُلبت مهمة لموظف غير موجود (مثل أحمد في T10)، يطلب البوت توضيحاً ولا يخمن.",
     placeholder: "اكتب رسالتك هنا بالعربي...",
     note: "Enter للإرسال · Shift + Enter لسطر جديد",
     welcome: "أهلاً بك 👋 اكتب طلبك وسينفذه المساعد وفق صلاحيات هذا المستخدم في قاعدة بيانات PostgreSQL.",
@@ -2247,6 +2412,19 @@ const i18n = {
     secPolicy: "Official Company Policy (Ground Truth)",
     secPerms: "Role Permissions & Security Policy",
     secRules: "Date Rules & Accurate Verification",
+    inst_pol_1: "<strong>1. Working Hours:</strong> Sunday through Thursday, 8:00 AM to 4:00 PM.",
+    inst_pol_2: "<strong>2. Annual Leave:</strong> Must be requested at least 5 business days in advance and requires direct supervisor approval.",
+    inst_pol_3: "<strong>3. Sick Leave:</strong> Requires an official certified medical report submitted within 48 hours of absence.",
+    inst_pol_4: "<strong>4. Remote Work:</strong> 1 day per week allowed upon supervisor approval, conditional on completing the 3-month probation period.",
+    inst_pol_5: "<strong>5. Probation Period:</strong> 3 months, extendable for an additional 3 months by mutual agreement.",
+    inst_pol_6: "<strong>6. Performance Review:</strong> Conducted bi-annually (June and December).",
+    inst_perm_1: "<strong>Employee:</strong> Can create and view tasks for themselves only. Blocked immediately with 403 Forbidden if attempting to assign to others.",
+    inst_perm_2: "<strong>Supervisor:</strong> Can create and view tasks for themselves and their department members only. Cross-department assignment is blocked (403 Forbidden).",
+    inst_perm_3: "<strong>Manager:</strong> Full company-wide permissions to create and view tasks across all departments without restriction.",
+    inst_perm_4: "<strong>Strict RBAC Security:</strong> Permissions are strictly enforced in code and PostgreSQL; user roles cannot be overridden by user message injection (blocks T08 prompt injection).",
+    inst_rule_1: "<strong>Friday Rule:</strong> If a scheduled task falls on a Friday, it is automatically rolled over to Saturday at the same time with an explicit note in the response.",
+    inst_rule_2: "<strong>Strict Grounding & Anti-Hallucination:</strong> If asked about topics absent from the approved policy (e.g. housing allowance), the bot immediately reports it as absent without guessing.",
+    inst_rule_3: "<strong>Unknown Entities:</strong> If an unknown person is requested (e.g. Ahmed in T10), the bot requests clarification rather than hallucinating an assignment.",
     placeholder: "Write your message here in Arabic...",
     note: "Enter to send · Shift + Enter for new line",
     welcome: "Welcome 👋 Send your request and it will be processed using this employee's PostgreSQL permissions.",
@@ -2457,19 +2635,18 @@ function showToast(message, icon = "✨") {
   }, 2600);
 }
 
-// Theme handling with SVG Icons
+// Theme handling with Day/Night Switch
 function setTheme(v) {
   theme = v;
   document.documentElement.dataset.theme = v;
   localStorage.setItem("ui-theme", v);
-  document.querySelector('meta[name="theme-color"]')?.setAttribute("content", v === "dark" ? "#070c12" : "#0096f5");
-  const icon = $("themeIcon");
-  if (v === "dark") {
-    // Sun Icon
-    icon.innerHTML = `<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>`;
-  } else {
-    // Moon Icon
-    icon.innerHTML = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>`;
+  document.querySelector('meta[name="theme-color"]')?.setAttribute("content", v === "dark" ? "#070c14" : "#0096f5");
+  const btn = $("themeBtn");
+  if (btn) {
+    btn.setAttribute("aria-checked", v === "dark" ? "true" : "false");
+    btn.title = lang === "ar"
+      ? (v === "dark" ? "التبديل إلى الوضع النهاري" : "التبديل إلى الوضع الليلي")
+      : (v === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode");
   }
 }
 
@@ -2477,9 +2654,12 @@ function setTheme(v) {
 function applyLang() {
   document.documentElement.lang = lang;
   document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
-  $("langBtn").textContent = lang === "ar" ? "EN" : "AR";
+  if ($("langText")) {
+    $("langText").textContent = lang === "ar" ? "EN" : "AR";
+  }
 
   document.querySelectorAll("[data-i18n]").forEach(el => el.textContent = T(el.dataset.i18n));
+  document.querySelectorAll("[data-i18n-html]").forEach(el => el.innerHTML = T(el.dataset.i18nHtml));
   document.querySelectorAll("[data-i18n-placeholder]").forEach(el => el.placeholder = T(el.dataset.i18nPlaceholder));
 
   updateSoundButton();
@@ -2975,14 +3155,17 @@ $("langBtn").onclick = () => {
   lang = lang === "ar" ? "en" : "ar";
   localStorage.setItem("ui-lang", lang);
   applyLang();
-  showToast(lang === "ar" ? "تم التحويل إلى العربية" : "Switched to English", "🌐");
+  showToast(lang === "ar" ? "تم التحويل إلى العربية 🌐" : "Switched to English 🌐", "🌐");
 };
 
 $("themeBtn").onclick = () => {
   playSound("click");
   const nextTheme = theme === "light" ? "dark" : "light";
   setTheme(nextTheme);
-  showToast(nextTheme === "dark" ? "الوضع الليلي 🌙" : "الوضع النهاري ☀️", "🎨");
+  const msg = lang === "ar"
+    ? (nextTheme === "dark" ? "الوضع الليلي 🌙" : "الوضع النهاري ☀️")
+    : (nextTheme === "dark" ? "Dark Mode 🌙" : "Light Mode ☀️");
+  showToast(msg, nextTheme === "dark" ? "🌙" : "☀️");
 };
 
 $("chatForm").onsubmit = e => {
