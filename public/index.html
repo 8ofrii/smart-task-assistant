@@ -4452,6 +4452,7 @@ const emp = () => employees.find(x => x.id === selected) || employees[1];
 const name = x => lang === "ar" ? x.ar : x.en;
 const role = x => lang === "ar" ? x.roleAr : x.roleEn;
 const dept = x => lang === "ar" ? x.deptAr : x.deptEn;
+const formatNum = n => lang === "ar" ? String(n).replace(/\d/g, d => "٠١٢٣٤٥٦٧٨٩"[d]) : String(n);
 
 /* ============================================================
    SYNTHESIZED WEB AUDIO SOUND ENGINE (Futuristic Chimes)
@@ -4823,8 +4824,9 @@ function renderGrid() {
     const roleBadgeClass = `badge-${x.role}`;
     const deptAvatarClass = `avatar-${x.deptKey} avatar-user-${x.id}`;
     const taskCount = employeeTaskCounts[x.id] || 0;
+    const displayTaskCount = formatNum(taskCount);
     const taskCountTitle = taskCount > 0 
-      ? `${taskCount} ${T("tasksBadge")}`
+      ? (lang === "ar" ? `${displayTaskCount} مهام` : `${taskCount} ${taskCount === 1 ? "task" : "tasks"}`)
       : T("noTasks");
 
     const scopeText = lang === "en"
@@ -4840,7 +4842,7 @@ function renderGrid() {
         <div class="card-top-badges">
           <span class="card-task-pill ${taskCount > 0 ? "has-tasks" : "no-tasks"}" title="${taskCountTitle}">
             <svg class="icon-svg" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-            <span>${taskCount}</span>
+            <span>${displayTaskCount}</span>
           </span>
           <span class="role-badge-pill ${roleBadgeClass}">${role(x)}</span>
         </div>
