@@ -1,104 +1,70 @@
-# ملف تسليم التقييم الفني — Technical Assessment Submission
+# مساعد المهام الذكي — Smart Task Assistant
 
-**اسم المرشح (Candidate Name):** محمود عبد الغفار (Mahmoud Abd El-Ghaffar)  
-**الوظيفة المتقدم لها (Position):** مهندس ذكاء اصطناعي (AI Engineer — Stage 02)  
-**المهمة (Task):** مساعد المهام الذكي (Smart Task Assistant)  
-**تاريخ التسليم (Submission Date):** 15 أكتوبر 2026  
+**المطور (Developer):** محمود عبد الغفار (Mahmoud Abd El-Ghaffar)  
+**المسمى (Role):** مهندس ذكاء اصطناعي (AI Engineer)  
+**تاريخ التسليم (Date):** 15 أكتوبر 2026  
 
 ---
 
-## 🔗 الروابط الرسمية للمشروع (Project Links)
+## 📌 نبذة موجزة عن المشروع
+
+نظام مساعد ذكي لإدارة المهام وفق الصلاحيات وسياسات الشركة، مبني بلغة **TypeScript** وقاعدة بيانات **PostgreSQL** السحابية. يستقبل الرسائل النصية باللغة العربية واللهجات ويستخرج المهام بدقة، مع **تطبيق حتمي صارم للصلاحيات في الباك إند** لعزل الذكاء الاصطناعي تماماً عن اتخاذ قرارات الأمان، وضمان الإجابة عن سياسات الشركة من النصوص المعتمدة فقط دون هلوسة.
+
+---
+
+## 🔗 الروابط الرئيسية للمشروع (Project Links)
 
 | العنصر | الرابط المباشر | الوصف |
 | :--- | :--- | :--- |
-| 🌐 **الرابط التجريبي الحي (Live App)** | [https://smart-task-assistant-5gu8.onrender.com/](https://smart-task-assistant-5gu8.onrender.com/) | النظام يعمل سحابياً مع واجهة تفاعلية كاملة تدعم تشغيل الاختبارات العشرة وسجل التدقيق والقرارات. |
-| 💻 **مستودع الكود (GitHub Repo)** | [https://github.com/8ofrii/smart-task-assistant](https://github.com/8ofrii/smart-task-assistant) | الكود المصدري كاملاً بلغة TypeScript، موثق ويعمل فوراً بأمر أو أمرين (`npm install && npm start`). |
-| 🎥 **فيديو العرض والشرح (Video Walkthrough)** | [Google Drive Folder Link](https://drive.google.com/drive/folders/19qF1QOs-TAP05WYc6ESrw5flSWnTgwel?usp=sharing) | فيديو يستعرض تشغيل الرسائل العشر (T01–T10)، ومطابقة النتائج، وشرح مواضع تطبيق الصلاحيات في الكود. |
+| 🌐 **الرابط الحي للتطبيق (Live App)** | [https://smart-task-assistant-5gu8.onrender.com/](https://smart-task-assistant-5gu8.onrender.com/) | الواجهة التفاعلية تعمل سحابياً ومتاحة للتجربة الفورية مع استعراض المهام وسجل التدقيق. |
+| 💻 **مستودع الكود (GitHub Repo)** | [https://github.com/8ofrii/smart-task-assistant](https://github.com/8ofrii/smart-task-assistant) | الكود المصدري كاملاً بلغة TypeScript، موثق ويعمل فوراً بأمر: `npm install && npm start`. |
+| 🎥 **فيديو الشرح العملي (Video Walkthrough)** | [Google Drive Link](https://drive.google.com/drive/folders/19qF1QOs-TAP05WYc6ESrw5flSWnTgwel?usp=sharing) | استعراض عملي لأمثلة وسيناريوهات المهام، التحقق من الصلاحيات، وترحيل المواعيد برمجياً. |
 
 ---
 
-## 📋 ملخص الوفاء بمتطلبات التسليم (Deliverables Checklist)
+## 📂 أهم ملفات الكود في المشروع (Key Implementation Files)
 
-### 01. الكود كاملاً (Codebase)
-- ✅ **معمارية نظيفة (Clean Architecture):** مبني بلغة TypeScript وقاعدة بيانات PostgreSQL السحابية، مع فصل تام بين المحلل الدلالي ومحرك الصلاحيات الحتمي.
-- ✅ **حماية البيانات والمفاتيح:** لا توجد أي مفاتيح أو بيانات سرية داخل الكود، مع توفير `.env.example` لبيان المتغيرات المطلوبة.
-- ✅ **تطبيق الصلاحيات في الكود (R3 - 25%):** عزل تام للـ LLM، وتطبيق الصلاحيات في `authorization.service.ts` و `task.service.ts` مع إحباط محاولة انتحال الدور في T08 برمجياً برفض 403.
-- ✅ **معالجة التواريخ واللهجات والجمعة (R4 - 20%):** دعم اللهجات والتواريخ النسبية ("بكرة"، "بعد بكرة"، "كمان 3 ايام"، "عقب باكر")، مع ترحيل مواعيد الجمعة للسبت تلقائياً في توقيت `Asia/Riyadh`.
-- ✅ **الإجابة من نص السياسة فقط دون تأليف (R5 - 15%):** التزام حرفي بنصوص السياسة الرسمية، والاعتراف بعدم توفر المعلومة في T07 (بدل السكن) دون اختلاق.
-- ✅ **اختبارات آلية شاملة:** 26+ اختباراً آلياً ناجحاً يغطي الصلاحيات، التواريخ، تحليل الرسائل، والسياسات.
-
-### 02. فيديو العرض (Video Guide)
-- استعراض الحالات العشر بالتسلسل (T01 إلى T10).
-- توضيح سجل التدقيق الفوري (`audit_logs`) لكل عملية مقبولة أو مرفوضة برمجياً.
-- استعراض الأسطر البرمجية التي تطبق الأمان وعزل الصلاحيات في `authorization.service.ts` و `chat.route.ts`.
-
-### 03. صفحة القرارات وحساب التكلفة (Decisions & Cost Breakdown)
-- مستند كامل متوفر في مستودع المشروع عبر [`DECISIONS.md`](https://github.com/8ofrii/smart-task-assistant/blob/main/DECISIONS.md) وصفحة تفاعلية داخل التطبيق الحي.
-- دراسة واقعية للتكلفة الشهرية لـ 100 موظف بمعدل 20 رسالة يومياً (60,000 استدعاء شهرياً) بالريال والدولار.
-- خطة تطويرية مفصلة للأسبوع الإضافي (RAG متقدم، ربط مع WhatsApp/Slack Webhooks، و Redis Caching).
+* [**`src/services/authorization.service.ts`**](https://github.com/8ofrii/smart-task-assistant/blob/main/src/services/authorization.service.ts):  
+  **محرك الصلاحيات (RBAC):** فحص حتمي في الكود (الموظف يسجل لنفسه فقط، المشرف لقسمه فقط، والمدير للجميع، مع حماية خصوصية المهام).
+* [**`src/services/task.service.ts`**](https://github.com/8ofrii/smart-task-assistant/blob/main/src/services/task.service.ts):  
+  **إدارة المهام والتدقيق:** تنفيذ إنشاء المهام، حظر العمليات غير المصرحة برمز `403` فوراً، وتسجيل كل عملية في جدول `audit_logs`.
+* [**`src/services/date.service.ts`**](https://github.com/8ofrii/smart-task-assistant/blob/main/src/services/date.service.ts):  
+  **معالج التواريخ والجمعة:** دعم اللهجات والتواريخ النسبية ("بكرة"، "كمان 3 أيام"، "عقب باكر")، وترحيل مواعيد الجمعة للسبت تلقائياً في توقيت `Asia/Riyadh`.
+* [**`src/services/policy.service.ts`**](https://github.com/8ofrii/smart-task-assistant/blob/main/src/services/policy.service.ts):  
+  **سياسات الشركة (Zero Hallucination):** الإجابة الحصرية من نصوص السياسة (الدوام، الإجازات، المصروفات) والاعتراف بعدم توفر المعلومة دون أي تأليف.
+* [**`src/services/llm.service.ts`**](https://github.com/8ofrii/smart-task-assistant/blob/main/src/services/llm.service.ts):  
+  **المحلل الدلالي الذكي:** استخراج النية والوصف والوقت عبر LLM (أو معالج بديل) مع تدقيق صارم بـ Zod ومطابقة الأسماء المتشابهة (نورا = نورة، عبدالرحمان = عبدالرحمن).
+* [**`src/routes/chat.route.ts`**](https://github.com/8ofrii/smart-task-assistant/blob/main/src/routes/chat.route.ts):  
+  **نقطة الـ API الرئيسية:** مسار `POST /chat`، واعتماد هوية ودور المرسل حصرياً من قاعدة البيانات برقم `user_id` لمنع أي انتحال للأدوار.
 
 ---
 
-## ✉️ نماذج جاهزة للإرسال للشركة (Ready-to-Send Messages)
-
-### الصيغة العربية (Arabic Message Template)
+## ✉️ نص الرسالة المرفقة مع ملف الـ PDF (Message Template)
 
 ```text
 السلام عليكم ورحمة الله وبركاته،
 
-الأفاضل في لجنة التقييم الفني / فريق التوظيف،
+الأفاضل في الفريق الفني،
 
-يسعدني أن أقدم لكم ملف تسليم المرحلة الثانية لتقييم مهندس الذكاء الاصطناعي (مساعد المهام الذكي — Smart Task Assistant)، متضمناً كافة المتطلبات وفقاً لملف التقييم الفني:
+أرفق لكم ملف تسليم مشروع (مساعد المهام الذكي — Smart Task Assistant) بصيغة PDF، مع الروابط الرئيسية للمشروع:
 
-1. 🌐 رابط النسخة الحية للتطبيق السحابي (Live Demo):
+1. 🌐 الرابط الحي للتطبيق (Live App):
 https://smart-task-assistant-5gu8.onrender.com/
 
-2. 💻 رابط مستودع الكود المصدري (GitHub Repository):
+2. 💻 مستودع الكود المصدري كاملاً (GitHub):
 https://github.com/8ofrii/smart-task-assistant
 
-3. 🎥 رابط فيديو العرض والشرح الفني (Video Walkthrough):
+3. 🎥 فيديو الشرح والاستعراض العملي (Video Walkthrough):
 https://drive.google.com/drive/folders/19qF1QOs-TAP05WYc6ESrw5flSWnTgwel?usp=sharing
 
-أبرز نقاط التنفيذ:
-• عزل تام للذكاء الاصطناعي عن اتخاذ القرارات الأمنية وتطبيق الصلاحيات برمجياً بنسبة 100% في الباك إند (تصمد أمام هجمات انتحال الأدوار).
-• معالجة ذكية للغة العربية واللهجات والتواريخ النسبية، وترحيل مهام يوم الجمعة للسبت تلقائياً وفق توقيت Asia/Riyadh.
-• الالتزام الصارم بالإجابة من نصوص السياسة المعتمدة دون أي هلوسة (Zero Hallucination).
-• توفير دراسة دقيقة للتكاليف والخيارات المعمارية داخل ملف DECISIONS.md وداخل واجهة المستخدم.
+أبرز الملفات التي تحتوي على كود النظام:
+• src/services/authorization.service.ts: تطبيق الصلاحيات برمجياً بنسبة 100% في الباك إند وعزل الذكاء الاصطناعي عن قرارات الأمان.
+• src/services/task.service.ts: إدارة المهام وحظر العمليات غير المصرحة برمز 403 وتوثيقها في audit_logs.
+• src/services/date.service.ts: معالجة التواريخ واللهجات وترحيل مواعيد الجمعة للسبت تلقائياً وفق توقيت Asia/Riyadh.
+• src/services/policy.service.ts: الإجابة الحصرية من نصوص سياسات الشركة دون أي تأليف.
 
-شاكر ومقدّر لوقتكم، وأتطلع لمناقشة التفاصيل خلال المقابلة القادمة بإذن الله.
+الملف المرفق (Submission.pdf) يوضح تفاصيل الروابط وهيكلية الكود.
 
-مع خالص التحية والتقدير،
+شاكر ومقدّر لوقتكم،
 محمود عبد الغفار (Mahmoud Abd El-Ghaffar)
-```
-
----
-
-### الصيغة الإنجليزية (English Message Template)
-
-```text
-Dear Hiring Team / Technical Evaluation Committee,
-
-I am pleased to submit my completed technical assessment for the AI Engineer position (Smart Task Assistant — Stage 02).
-
-Below are the official deliverable links:
-
-1. 🌐 Live Application Demo:
-https://smart-task-assistant-5gu8.onrender.com/
-
-2. 💻 Source Code Repository (GitHub):
-https://github.com/8ofrii/smart-task-assistant
-
-3. 🎥 Video Walkthrough (Code & Test Cases Demo):
-https://drive.google.com/drive/folders/19qF1QOs-TAP05WYc6ESrw5flSWnTgwel?usp=sharing
-
-Key Implementation Highlights:
-• Strict Backend-Enforced RBAC: LLM is completely isolated from execution/security decisions; role claims (such as T08 injection attacks) are rejected deterministically with 403 Forbidden and logged in audit_logs.
-• Arabic Dialect & Relative Date Handling: Full support for dialects and relative dates (tomorrow, in 3 days, next Sunday) with automatic Friday-to-Saturday rollover under Asia/Riyadh timezone (R4).
-• Zero Hallucination: Grounded answers strictly derived from authorized company policies with explicit admission of missing info (R5).
-• Architectural Decisions & Cost Realism: Comprehensive analysis and 60k requests/month cost breakdown documented in DECISIONS.md and accessible directly in the Web UI.
-
-Thank you for your time and consideration. Looking forward to discussing the project in the upcoming interview.
-
-Best regards,
-Mahmoud Abd El-Ghaffar
 ```
