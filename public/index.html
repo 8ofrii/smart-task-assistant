@@ -3302,13 +3302,171 @@
       }
     }
 
-    @media (max-width: 580px) {
-      .people-grid {
-        grid-template-columns: 1fr;
-      }
-      .kpi-row {
-        grid-template-columns: 1fr;
-      }
+    /* Custom Small Modal / Dialog */
+    .custom-dialog-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(7, 12, 20, 0.65);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      display: none;
+      place-items: center;
+      z-index: 10000;
+      padding: 16px;
+      animation: fadeIn 0.18s ease;
+    }
+
+    .custom-dialog-overlay.open {
+      display: grid;
+    }
+
+    .custom-dialog-card {
+      width: min(440px, 100%);
+      background: var(--panel-solid);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+      gap: 16px;
+      animation: customDialogPop 0.24s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+    }
+
+    @keyframes customDialogPop {
+      from { opacity: 0; transform: scale(0.9) translateY(12px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .custom-dialog-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .custom-dialog-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      font-size: 20px;
+    }
+
+    .custom-dialog-icon svg {
+      width: 24px;
+      height: 24px;
+      stroke-width: 2.2;
+    }
+
+    .custom-dialog-icon.danger {
+      background: rgba(239, 68, 68, 0.14);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .custom-dialog-icon.warning {
+      background: rgba(245, 158, 11, 0.14);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .custom-dialog-icon.info {
+      background: rgba(0, 150, 245, 0.14);
+      color: var(--brand);
+      border: 1px solid rgba(0, 150, 245, 0.3);
+    }
+
+    .custom-dialog-icon.success {
+      background: rgba(16, 185, 129, 0.14);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .custom-dialog-header-text {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .custom-dialog-header-text h4 {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.2px;
+    }
+
+    .custom-dialog-body {
+      padding: 2px 0 6px;
+    }
+
+    .custom-dialog-body p {
+      margin: 0;
+      font-size: 14.5px;
+      line-height: 1.6;
+      color: var(--muted);
+      word-break: break-word;
+    }
+
+    .custom-dialog-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      padding-top: 4px;
+    }
+
+    .custom-dialog-btn {
+      padding: 10px 18px;
+      border-radius: 12px;
+      font-size: 13.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-family: inherit;
+      outline: none;
+      border: 1px solid transparent;
+    }
+
+    .custom-dialog-btn.cancel {
+      background: var(--panel2);
+      color: var(--muted);
+      border: 1px solid var(--line);
+    }
+
+    .custom-dialog-btn.cancel:hover {
+      background: var(--panel);
+      color: var(--text);
+      border-color: var(--line-strong);
+    }
+
+    .custom-dialog-btn.confirm.primary {
+      background: var(--brand);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(0, 150, 245, 0.35);
+    }
+
+    .custom-dialog-btn.confirm.primary:hover {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+    }
+
+    .custom-dialog-btn.confirm.danger {
+      background: #ef4444;
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+    }
+
+    .custom-dialog-btn.confirm.danger:hover {
+      background: #dc2626;
+      filter: brightness(1.08);
+      transform: translateY(-1px);
     }
   </style>
 </head>
@@ -4100,6 +4258,31 @@
   </div>
 </div>
 
+<!-- Custom Elegant Small Confirmation & Alert Dialog -->
+<div id="customConfirmModal" class="custom-dialog-overlay" role="dialog" aria-modal="true" aria-labelledby="customDialogTitle">
+  <div class="custom-dialog-card">
+    <div class="custom-dialog-header">
+      <div id="customDialogIconWrap" class="custom-dialog-icon danger">
+        <!-- SVG will be injected dynamically -->
+      </div>
+      <div class="custom-dialog-header-text">
+        <h4 id="customDialogTitle">تأكيد الإجراء</h4>
+      </div>
+    </div>
+    <div class="custom-dialog-body">
+      <p id="customDialogMessage"></p>
+    </div>
+    <div class="custom-dialog-actions">
+      <button id="customDialogCancelBtn" class="custom-dialog-btn cancel" type="button">
+        إلغاء
+      </button>
+      <button id="customDialogConfirmBtn" class="custom-dialog-btn confirm danger" type="button">
+        تأكيد
+      </button>
+    </div>
+  </div>
+</div>
+
 <script>
 // Employee Directory Seed Data
 const employees = [
@@ -4653,6 +4836,124 @@ function showToast(message, iconKey = "check") {
     toast.classList.remove("show");
   }, 2600);
 }
+
+/* ============================================================
+   CUSTOM SMALL MODAL & ALERT DIALOG ENGINE
+   ============================================================ */
+function showConfirmDialog(options = {}) {
+  return new Promise((resolve) => {
+    const overlay = $("customConfirmModal");
+    const iconWrap = $("customDialogIconWrap");
+    const titleEl = $("customDialogTitle");
+    const msgEl = $("customDialogMessage");
+    const cancelBtn = $("customDialogCancelBtn");
+    const confirmBtn = $("customDialogConfirmBtn");
+
+    if (!overlay) {
+      const fallbackResult = window.__nativeConfirm ? window.__nativeConfirm(options.message || "") : true;
+      resolve(fallbackResult);
+      return;
+    }
+
+    const isAr = lang === "ar";
+    const type = options.type || "warning";
+
+    titleEl.textContent = options.title || (isAr ? (type === "danger" ? "تأكيد الإجراء" : "تأكيد") : (type === "danger" ? "Confirm Action" : "Confirm"));
+    msgEl.textContent = options.message || "";
+    cancelBtn.textContent = options.cancelText || (isAr ? "إلغاء" : "Cancel");
+    confirmBtn.textContent = options.confirmText || (isAr ? "موافق" : "OK");
+
+    // Icons
+    iconWrap.className = `custom-dialog-icon ${type}`;
+    if (type === "danger") {
+      iconWrap.innerHTML = '<svg class="icon-svg" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+      confirmBtn.className = "custom-dialog-btn confirm danger";
+    } else if (type === "info") {
+      iconWrap.innerHTML = '<svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>';
+      confirmBtn.className = "custom-dialog-btn confirm primary";
+    } else if (type === "success") {
+      iconWrap.innerHTML = '<svg class="icon-svg" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>';
+      confirmBtn.className = "custom-dialog-btn confirm primary";
+    } else {
+      iconWrap.innerHTML = '<svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+      confirmBtn.className = "custom-dialog-btn confirm primary";
+    }
+
+    cancelBtn.style.display = options.isAlert ? "none" : "inline-flex";
+
+    let cleanup = null;
+
+    const closeWith = (val) => {
+      playSound("click");
+      overlay.classList.remove("open");
+      if (cleanup) cleanup();
+      resolve(val);
+    };
+
+    const onConfirm = () => closeWith(true);
+    const onCancel = () => closeWith(false);
+    const onOverlayClick = (e) => {
+      if (e.target === overlay) closeWith(false);
+    };
+    const onKeyDown = (e) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        closeWith(false);
+      } else if (e.key === "Enter" && !options.isAlert) {
+        e.preventDefault();
+        closeWith(true);
+      }
+    };
+
+    confirmBtn.onclick = onConfirm;
+    cancelBtn.onclick = onCancel;
+    overlay.onclick = onOverlayClick;
+    document.addEventListener("keydown", onKeyDown);
+
+    cleanup = () => {
+      confirmBtn.onclick = null;
+      cancelBtn.onclick = null;
+      overlay.onclick = null;
+      document.removeEventListener("keydown", onKeyDown);
+    };
+
+    overlay.classList.add("open");
+    playSound("click");
+    setTimeout(() => {
+      if (options.isAlert || type !== "danger") {
+        confirmBtn.focus();
+      } else {
+        cancelBtn.focus();
+      }
+    }, 60);
+  });
+}
+
+function showAlertDialog(message, title, type = "info") {
+  if (typeof message === "object" && message !== null) {
+    return showConfirmDialog({
+      title: message.title,
+      message: message.message,
+      type: message.type || "info",
+      confirmText: message.okText || (lang === "ar" ? "موافق" : "OK"),
+      isAlert: true
+    });
+  }
+  return showConfirmDialog({
+    title: title || (lang === "ar" ? "تنبيه" : "Notice"),
+    message: String(message),
+    type: type,
+    confirmText: lang === "ar" ? "موافق" : "OK",
+    isAlert: true
+  });
+}
+
+// Preserve native alert/confirm and override window.alert
+window.__nativeAlert = window.alert;
+window.__nativeConfirm = window.confirm;
+window.alert = function (msg) {
+  showAlertDialog(msg);
+};
 
 // Theme handling with Day/Night Switch
 function setTheme(v) {
@@ -5251,7 +5552,14 @@ async function checkDbHealth() {
 // Clear Database Handler
 if ($("clearDbBtn")) $("clearDbBtn").onclick = async () => {
   playSound("click");
-  if (!confirm(T("clearDbConfirm"))) return;
+  const confirmed = await showConfirmDialog({
+    title: lang === "ar" ? "تأكيد تفريغ قاعدة البيانات" : "Confirm Database Reset",
+    message: T("clearDbConfirm"),
+    confirmText: lang === "ar" ? "نعم، تفريغ البيانات" : "Yes, Reset",
+    cancelText: lang === "ar" ? "إلغاء" : "Cancel",
+    type: "danger"
+  });
+  if (!confirmed) return;
   try {
     const r = await fetch("/api/reset", { method: "POST" });
     const d = await r.json();
@@ -5526,7 +5834,14 @@ if ($("runPromptTestBtn")) {
 if ($("clearDbBtnModal")) {
   $("clearDbBtnModal").onclick = async () => {
     playSound("click");
-    if (!confirm(T("clearDbConfirm"))) return;
+    const confirmed = await showConfirmDialog({
+      title: lang === "ar" ? "تأكيد تفريغ قاعدة البيانات" : "Confirm Database Reset",
+      message: T("clearDbConfirm"),
+      confirmText: lang === "ar" ? "نعم، تفريغ البيانات" : "Yes, Reset",
+      cancelText: lang === "ar" ? "إلغاء" : "Cancel",
+      type: "danger"
+    });
+    if (!confirmed) return;
     try {
       const r = await fetch("/api/reset", { method: "POST" });
       const d = await r.json();
