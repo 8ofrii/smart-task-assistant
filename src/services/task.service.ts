@@ -87,6 +87,7 @@ export async function findEmployeesByName(
 
     const nameMatches =
       empArNorm === normalizedName ||
+      empArNorm.replace(/\s+/g, "") === normalizedName.replace(/\s+/g, "") ||
       empEnNorm === rawLowerName;
 
     const empDeptNorm = normalizeArabic(employee.department);
@@ -368,14 +369,29 @@ export async function listTasks(params: {
     }
   });
 
+  let reply = "";
+  if (scope === "employee" && target) {
+    const targetName = isEn ? (EMP_EN_NAMES[target.name] || target.name) : target.name;
+    if (result.rows.length === 0) {
+      reply = isEn
+        ? `No tasks assigned to ${targetName}.`
+        : `لا توجد مهام مسندة لـ ${target.name}.`;
+    } else {
+      reply = isEn
+        ? `Yes, the following tasks are assigned to ${targetName}:\n${formatTasks(result.rows, lang)}`
+        : `نعم، توجد المهام التالية المسندة لـ ${target.name}:\n${formatTasks(result.rows, lang)}`;
+    }
+  } else {
+    reply = result.rows.length === 0
+      ? (isEn ? "No matching tasks found." : "لا توجد مهام مطابقة.")
+      : (isEn ? `Tasks:\n${formatTasks(result.rows, lang)}` : `المهام:\n${formatTasks(result.rows, lang)}`);
+  }
+
   return {
     allowed: true as const,
     status: "ok" as const,
     tasks: result.rows,
-    reply:
-      result.rows.length === 0
-        ? (isEn ? "No matching tasks found." : "لا توجد مهام مطابقة.")
-        : (isEn ? `Tasks:\n${formatTasks(result.rows, lang)}` : `المهام:\n${formatTasks(result.rows, lang)}`)
+    reply
   };
 }
 

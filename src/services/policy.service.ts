@@ -111,8 +111,20 @@ export function detectPolicyTopic(question: string): PolicyTopic {
     q.includes("حاله المهمه") ||
     q.includes("تحديث المهمه") ||
     q.includes("تحديث حالة") ||
+    q.includes("تحديث حاله") ||
+    q.includes("احدث حاله") ||
+    q.includes("احدث حالة") ||
+    q.includes("احدث مهامي") ||
+    q.includes("تحديث مهامي") ||
+    q.includes("تحديث المهام") ||
+    q.includes("حاله مهامي") ||
+    q.includes("حالة مهامي") ||
+    (q.includes("احدث") && (q.includes("حاله") || q.includes("مهم") || q.includes("نظام"))) ||
+    (q.includes("تحديث") && (q.includes("حاله") || q.includes("مهم") || q.includes("نظام"))) ||
     qEn.includes("task status") ||
-    qEn.includes("update task")
+    qEn.includes("update task") ||
+    qEn.includes("update my task") ||
+    (qEn.includes("update") && (qEn.includes("status") || qEn.includes("task")))
   ) {
     return "task_status_update";
   }

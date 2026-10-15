@@ -41,4 +41,15 @@ describe("policy grounding", () => {
     );
     expect(housing).toBe("This information is not available in the company policy.");
   });
+
+  it("answers task status update policy question (Rule 6)", () => {
+    const question = "متى لازم أحدث حالة مهامي في النظام؟";
+    expect(detectPolicyTopic(question)).toBe("task_status_update");
+
+    const answer = answerPolicyQuestion(question);
+    expect(answer).toBe("تحديث حالة المهمة يوميًا قبل نهاية الدوام.");
+
+    const answerEn = answerPolicyQuestion("When do I update my task status?", null, "en");
+    expect(answerEn).toBe("Task status must be updated daily before the end of the workday.");
+  });
 });
