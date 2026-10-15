@@ -15,6 +15,7 @@ import {
   getAllEmployees,
   getEmployeeById,
   getRecentAuditLogs,
+  getTaskCountsByEmployee,
   listTasks,
   resetTasksAndLogs
 } from "../services/task.service.js";
@@ -267,6 +268,16 @@ router.get("/api/tasks", async (req, res) => {
   } catch (error) {
     console.error("Failed to fetch tasks:", error);
     return res.status(500).json({ ok: false, error: "Failed to fetch tasks" });
+  }
+});
+
+router.get("/api/tasks/counts", async (_req, res) => {
+  try {
+    const counts = await getTaskCountsByEmployee();
+    return res.json({ ok: true, counts });
+  } catch (error) {
+    console.error("Failed to fetch task counts:", error);
+    return res.status(500).json({ ok: false, error: "Failed to fetch task counts" });
   }
 });
 

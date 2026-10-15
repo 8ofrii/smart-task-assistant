@@ -131,9 +131,23 @@
       object-fit: contain;
     }
 
+    .domira-watermark svg {
+      width: 100%;
+      height: 100%;
+      stroke: var(--brand);
+      stroke-width: 1.8;
+      fill: none;
+      filter: drop-shadow(0 2px 8px rgba(0, 150, 245, 0.25));
+    }
+
     html[data-theme="dark"] .domira-watermark {
       opacity: 0.24;
       filter: drop-shadow(0 2px 12px rgba(56, 189, 248, 0.35));
+    }
+
+    html[data-theme="dark"] .domira-watermark svg {
+      stroke: #38bdf8;
+      filter: drop-shadow(0 2px 10px rgba(56, 189, 248, 0.35));
     }
 
     .domira-watermark.wm-pos-1 {
@@ -198,6 +212,70 @@
       bottom: 1.5%;
       right: 36%;
       animation: domiraFloat3 23s ease-in-out infinite alternate -15s;
+    }
+
+    .domira-watermark.wm-pos-9 {
+      width: 38px;
+      height: 38px;
+      top: 24%;
+      left: 1.8%;
+      animation: domiraFloat1 21s ease-in-out infinite alternate -4s;
+    }
+
+    .domira-watermark.wm-pos-10 {
+      width: 36px;
+      height: 36px;
+      top: 72%;
+      left: 2.2%;
+      animation: domiraFloat3 23s ease-in-out infinite alternate -7s;
+    }
+
+    .domira-watermark.wm-pos-11 {
+      width: 36px;
+      height: 36px;
+      top: 22%;
+      right: 2%;
+      animation: domiraFloat2 20s ease-in-out infinite alternate -11s;
+    }
+
+    .domira-watermark.wm-pos-12 {
+      width: 38px;
+      height: 38px;
+      top: 72%;
+      right: 2.2%;
+      animation: domiraFloat4 24s ease-in-out infinite alternate -9s;
+    }
+
+    .domira-watermark.wm-pos-13 {
+      width: 32px;
+      height: 32px;
+      top: 2%;
+      left: 64%;
+      animation: domiraFloat2 22s ease-in-out infinite alternate -13s;
+    }
+
+    .domira-watermark.wm-pos-14 {
+      width: 34px;
+      height: 34px;
+      bottom: 2%;
+      left: 20%;
+      animation: domiraFloat1 25s ease-in-out infinite alternate -16s;
+    }
+
+    .domira-watermark.wm-pos-15 {
+      width: 32px;
+      height: 32px;
+      bottom: 2%;
+      right: 18%;
+      animation: domiraFloat3 21s ease-in-out infinite alternate -14s;
+    }
+
+    .domira-watermark.wm-pos-16 {
+      width: 32px;
+      height: 32px;
+      top: 2%;
+      left: 18%;
+      animation: domiraFloat4 26s ease-in-out infinite alternate -17s;
     }
 
     @keyframes domiraFloat1 {
@@ -1516,6 +1594,136 @@
       font-size: 12px;
     }
 
+    /* People Toolbar: Search & Dept Filter Tabs */
+    .people-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .people-search-box {
+      flex: 1;
+      min-width: 220px;
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .people-search-box input {
+      width: 100%;
+      height: 34px;
+      padding-inline-start: 32px;
+      padding-inline-end: 30px;
+      background: var(--panel-solid);
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      font-size: 11.5px;
+      font-family: inherit;
+      color: var(--text);
+      outline: none;
+      transition: all 0.2s ease;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
+    }
+
+    .people-search-box input:focus {
+      border-color: var(--brand);
+      box-shadow: 0 0 0 3px rgba(0, 150, 245, 0.14);
+    }
+
+    .people-search-box .search-icon {
+      position: absolute;
+      inset-inline-start: 10px;
+      width: 13px;
+      height: 13px;
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    .people-search-box .search-clear-btn {
+      position: absolute;
+      inset-inline-end: 7px;
+      width: 20px;
+      height: 20px;
+      background: rgba(148, 163, 184, 0.15);
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      color: var(--muted);
+      transition: all 0.15s ease;
+    }
+
+    .people-search-box .search-clear-btn:hover {
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+    }
+
+    .people-search-box .search-clear-btn svg {
+      width: 10px;
+      height: 10px;
+      stroke-width: 2.5;
+    }
+
+    .dept-filter-tabs {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--panel-solid);
+      padding: 3px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+    }
+
+    .dept-filter-btn {
+      background: transparent;
+      border: none;
+      font-size: 11px;
+      font-weight: 700;
+      font-family: inherit;
+      padding: 4px 10px;
+      border-radius: 7px;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.18s ease;
+      user-select: none;
+    }
+
+    .dept-filter-btn:hover {
+      color: var(--text);
+      background: rgba(0, 150, 245, 0.06);
+    }
+
+    .dept-filter-btn.active {
+      background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(0, 150, 245, 0.28);
+    }
+
+    html[data-theme="dark"] .dept-filter-btn.active {
+      background: linear-gradient(135deg, #0096f5, #0077c8);
+      color: #ffffff;
+      box-shadow: 0 2px 10px rgba(0, 150, 245, 0.4);
+    }
+
+    .empty-employees-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 36px 16px;
+      color: var(--muted);
+      background: var(--panel-solid);
+      border: 1px dashed var(--line);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
     .people-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1651,6 +1859,51 @@
       border-radius: 999px;
       font-weight: 800;
       letter-spacing: 0.1px;
+    }
+
+    .card-top-badges {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .card-task-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 3.5px;
+      font-size: 9.5px;
+      font-weight: 800;
+      padding: 1.5px 6.5px;
+      border-radius: 999px;
+      transition: all 0.25s ease;
+      cursor: default;
+      user-select: none;
+    }
+
+    .card-task-pill svg {
+      width: 10px;
+      height: 10px;
+      stroke-width: 2.4;
+    }
+
+    .card-task-pill.has-tasks {
+      background: rgba(0, 150, 245, 0.14);
+      color: var(--brand);
+      border: 1px solid rgba(0, 150, 245, 0.35);
+      box-shadow: 0 1px 4px rgba(0, 150, 245, 0.12);
+    }
+
+    html[data-theme="dark"] .card-task-pill.has-tasks {
+      background: rgba(56, 189, 248, 0.18);
+      color: #38bdf8;
+      border-color: rgba(56, 189, 248, 0.4);
+    }
+
+    .card-task-pill.no-tasks {
+      background: rgba(148, 163, 184, 0.1);
+      color: var(--muted);
+      border: 1px solid var(--line);
+      opacity: 0.75;
     }
 
     .person-card .person-info {
@@ -3109,6 +3362,30 @@
   <div class="domira-watermark wm-pos-8" title="Domira">
     <img src="/company-logo.svg" alt="Domira" onerror="this.src='/company-logo.png'">
   </div>
+  <div class="domira-watermark wm-pos-9" title="AI Brain">
+    <svg viewBox="0 0 24 24"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-2.04z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-2.04z"/></svg>
+  </div>
+  <div class="domira-watermark wm-pos-10" title="Tasks">
+    <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+  </div>
+  <div class="domira-watermark wm-pos-11" title="Security & RBAC">
+    <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+  </div>
+  <div class="domira-watermark wm-pos-12" title="PostgreSQL Database">
+    <svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+  </div>
+  <div class="domira-watermark wm-pos-13" title="Calendar & Scheduling">
+    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+  </div>
+  <div class="domira-watermark wm-pos-14" title="Rules Engine">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+  </div>
+  <div class="domira-watermark wm-pos-15" title="Execution Speed">
+    <svg viewBox="0 0 24 24"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4.5c1.45-1.47 4.5-2 4.5-2"/><path d="M12 9v5s3.03-.55 4.5-2c1.47-1.45 2-4.5 2-4.5"/></svg>
+  </div>
+  <div class="domira-watermark wm-pos-16" title="AI Intelligence">
+    <svg viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+  </div>
 </div>
 
 <div class="shell">
@@ -3318,6 +3595,25 @@
     <div class="content">
       <!-- VIEW 1: Employee Grid -->
       <section id="peoplePage" class="page people-page active">
+        <!-- Directory Toolbar (Search & Department Filter Tabs) -->
+        <div class="people-toolbar">
+          <div class="people-search-box">
+            <svg class="icon-svg search-icon" viewBox="0 0 24 24">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input type="text" id="employeeSearchInput" data-i18n-placeholder="searchEmpPlaceholder" placeholder="بحث بالاسم أو القسم أو المسمى...">
+            <button type="button" id="employeeSearchClear" class="search-clear-btn" title="مسح" style="display:none;">
+              <svg class="icon-svg" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+          <div class="dept-filter-tabs" role="tablist">
+            <button type="button" class="dept-filter-btn active" data-dept="all" data-i18n="deptAll">الكل</button>
+            <button type="button" class="dept-filter-btn" data-dept="projects" data-i18n="deptProjects">المشاريع</button>
+            <button type="button" class="dept-filter-btn" data-dept="finance" data-i18n="deptFinance">المالية</button>
+            <button type="button" class="dept-filter-btn" data-dept="management" data-i18n="deptManagement">الإدارة</button>
+          </div>
+        </div>
         <div id="peopleGrid" class="people-grid"></div>
       </section>
 
@@ -3668,6 +3964,22 @@
             <h4><svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> <span>عزل الصلاحيات وحماية Prompt Injection (T08)</span></h4>
             <ul class="instruction-points">
               <li><strong>الشرط الأساسي في التقييم (R3):</strong> لا يملك الذكاء الاصطناعي أي سلطة تنفيذية. دوره فقط استخراج البيانات الدلالية كـ JSON، بينما الصلاحيات تُقرأ من قاعدة البيانات برمجياً وتُحسم في الباك إند حصرياً.</li>
+            </ul>
+          </div>
+          <div class="instruction-card" style="border-inline-start-color: #0096f5;">
+            <h4><svg class="icon-svg" viewBox="0 0 24 24" style="color:#0096f5;"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> <span>معمارية الفصل الحتمي التام: محرك القواعد vs النموذج اللغوي</span></h4>
+            <ul class="instruction-points">
+              <li><strong>فصل الفهم الدلالي عن منطق الأعمال:</strong> لا يُسمح للذكاء الاصطناعي باتخاذ أي قرار عمل (مثل ترحيل الجمعة R4، أو فحص صلاحيات الأقسام R3، أو استرجاع السياسة R5). دوره محصور في استخراج المعاملات كـ JSON منظم.</li>
+              <li><strong>حتمية كاملة 100% (Zero Hallucination):</strong> قواعد التواريخ والأمان واسترجاع السياسة تُنفذ بكود TypeScript مباشر وقاعدة البيانات دون الاعتماد على التوليد الحر.</li>
+              <li><strong>المرونة ومقاومة الأعطال (Graceful Fallback):</strong> في حال انقطاع خدمة الذكاء الاصطناعي أو بطء الشبكة، يتولى محرك القواعد المحلي معالجة جميع الطلبات بنجاح فوري وبزمن استجابة &lt; 5ms.</li>
+            </ul>
+          </div>
+          <div class="instruction-card" style="border-inline-start-color: #10b981;">
+            <h4><svg class="icon-svg" viewBox="0 0 24 24" style="color:#10b981;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> <span>استراتيجية الصمود ضد انقطاع الشبكة والتعافي الذاتي (Self-Healing DB)</span></h4>
+            <ul class="instruction-points">
+              <li><strong>فحص صحة دوري حي (Active Heartbeat Polling):</strong> فحص دوري عبر استعلام `SELECT 1` على مسار `/health` لاكتشاف انقطاع أو عودة PostgreSQL فوراً.</li>
+              <li><strong>مجمع اتصالات ذاتي الإصلاح:</strong> يعيد مجمع الاتصالات (Connection Pool) بناء الروابط تلقائياً عند استعادة السيرفر دون الحاجة لإعادة تشغيل خادم التطبيق.</li>
+              <li><strong>تغذية بصرية ونغمية تفاعلية:</strong> يتحول مؤشر الحالة لحظياً إلى اللون الأحمر النابض عند انقطاع الاتصال مع نغمة تحذيرية هادئة لحماية المستخدم من فقدان البيانات.</li>
             </ul>
           </div>
         </div>
@@ -4032,7 +4344,15 @@ const i18n = {
     kpiAiVal: "GPT-4o",
     kpiAiSub: "تحليل نصوص وأوامر",
     kpiFridayVal: "ترحيل الجمعة",
-    kpiFridaySub: "قاعدة ترحيل الأيام"
+    kpiFridaySub: "قاعدة ترحيل الأيام",
+    searchEmpPlaceholder: "بحث بالاسم أو القسم أو المسمى...",
+    deptAll: "الكل",
+    deptProjects: "المشاريع",
+    deptFinance: "المالية",
+    deptManagement: "الإدارة",
+    tasksBadge: "مهام",
+    noTasks: "لا توجد مهام",
+    noEmployeesFound: "لا يوجد موظفون يطابقون معايير البحث"
   },
   en: {
     brand: "Smart Task Assistant",
@@ -4119,7 +4439,15 @@ const i18n = {
     kpiAiVal: "GPT-4o",
     kpiAiSub: "NLP & Reasoning",
     kpiFridayVal: "Friday Rollover",
-    kpiFridaySub: "Rule R4 to Saturday"
+    kpiFridaySub: "Rule R4 to Saturday",
+    searchEmpPlaceholder: "Search by name, department or role...",
+    deptAll: "All",
+    deptProjects: "Projects",
+    deptFinance: "Finance",
+    deptManagement: "Management",
+    tasksBadge: "tasks",
+    noTasks: "No tasks",
+    noEmployeesFound: "No matching employees found"
   }
 };
 
@@ -4127,6 +4455,9 @@ let lang = localStorage.getItem("ui-lang") || "ar";
 let theme = localStorage.getItem("ui-theme") || "light";
 let selected = Number(localStorage.getItem("selected-user") || 2);
 let soundEnabled = localStorage.getItem("ui-sound") !== "false";
+let employeeTaskCounts = {};
+let currentDeptFilter = "all";
+let currentEmpSearch = "";
 
 const $ = id => document.getElementById(id);
 const peoplePage = $("peoplePage"), chatPage = $("chatPage"), grid = $("peopleGrid"), messages = $("messages");
@@ -4457,14 +4788,58 @@ function renderCustomTestDropdown() {
   });
 }
 
-// Render Employee Grid with 3D Tilt Micro-interactions
+async function loadTaskCounts() {
+  try {
+    const res = await fetch("/api/tasks/counts");
+    if (!res.ok) return;
+    const data = await res.json();
+    if (data && data.ok && data.counts) {
+      employeeTaskCounts = data.counts;
+      renderGrid();
+    }
+  } catch (err) {
+    console.debug("Failed to load task counts:", err);
+  }
+}
+
+// Render Employee Grid with Filter, Search, Task Counts & 3D Tilt Micro-interactions
 function renderGrid() {
   grid.innerHTML = "";
-  employees.forEach(x => {
+  const q = (currentEmpSearch || "").trim().toLowerCase();
+
+  const filtered = employees.filter(x => {
+    if (currentDeptFilter !== "all" && x.deptKey !== currentDeptFilter) {
+      return false;
+    }
+    if (!q) return true;
+    const nAr = (x.ar || "").toLowerCase();
+    const nEn = (x.en || "").toLowerCase();
+    const rAr = (x.roleAr || "").toLowerCase();
+    const rEn = (x.roleEn || "").toLowerCase();
+    const dAr = (x.deptAr || "").toLowerCase();
+    const dEn = (x.deptEn || "").toLowerCase();
+    return nAr.includes(q) || nEn.includes(q) || rAr.includes(q) || rEn.includes(q) || dAr.includes(q) || dEn.includes(q);
+  });
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `
+      <div class="empty-employees-state">
+        <svg class="icon-svg" style="width:34px;height:34px;margin-bottom:8px;opacity:0.5;stroke:var(--muted);" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <span style="font-weight:700; font-size:12.5px;">${T("noEmployeesFound")}</span>
+      </div>
+    `;
+    return;
+  }
+
+  filtered.forEach(x => {
     const c = document.createElement("article");
     c.className = `person-card ${x.id === selected ? "selected" : ""}`;
     const roleBadgeClass = `badge-${x.role}`;
     const deptAvatarClass = `avatar-${x.deptKey} avatar-user-${x.id}`;
+    const taskCount = employeeTaskCounts[x.id] || 0;
+    const taskCountTitle = taskCount > 0 
+      ? `${taskCount} ${T("tasksBadge")}`
+      : T("noTasks");
 
     const scopeText = lang === "en"
       ? (x.role === "manager" ? "Full Org Scope" : x.role === "supervisor" ? "Dept Scope" : "Execution Scope")
@@ -4476,7 +4851,13 @@ function renderGrid() {
           ${name(x).charAt(0)}
           <span class="online-indicator"></span>
         </div>
-        <span class="role-badge-pill ${roleBadgeClass}">${role(x)}</span>
+        <div class="card-top-badges">
+          <span class="card-task-pill ${taskCount > 0 ? "has-tasks" : "no-tasks"}" title="${taskCountTitle}">
+            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            <span>${taskCount}</span>
+          </span>
+          <span class="role-badge-pill ${roleBadgeClass}">${role(x)}</span>
+        </div>
       </div>
       <div class="person-info">
         <h3>
@@ -4596,6 +4977,9 @@ function view(v) {
   $("gridBtn").classList.toggle("active", isGrid);
   $("chatBtn").classList.toggle("active", !isGrid);
   refreshHeader();
+  if (isGrid) {
+    loadTaskCounts();
+  }
 }
 
 function openChat() {
@@ -4819,6 +5203,7 @@ async function send(message) {
     if (d.action === "create_task") {
       playSound("success");
       launchConfetti();
+      loadTaskCounts();
     } else if (d.action === "rejected" || r.status === 403) {
       playSound("reject");
     } else {
@@ -4885,6 +5270,9 @@ if ($("clearDbBtn")) $("clearDbBtn").onclick = async () => {
     playSound("success");
     showToast(T("clearDbSuccess"), "trash");
     resetChat();
+    employeeTaskCounts = {};
+    renderGrid();
+    loadTaskCounts();
     checkDbHealth();
   } catch (e) {
     playSound("reject");
@@ -5157,6 +5545,9 @@ if ($("clearDbBtnModal")) {
       playSound("success");
       showToast(T("clearDbSuccess"), "trash");
       resetChat();
+      employeeTaskCounts = {};
+      renderGrid();
+      loadTaskCounts();
       checkDbHealth();
     } catch (e) {
       playSound("reject");
@@ -5279,11 +5670,47 @@ if ($("copyDecisionsMarkdownBtn")) {
   };
 }
 
+// Employee Directory Search & Department Filter Tabs
+const empSearchInput = $("employeeSearchInput");
+const empSearchClear = $("employeeSearchClear");
+
+if (empSearchInput) {
+  empSearchInput.addEventListener("input", (e) => {
+    currentEmpSearch = e.target.value;
+    if (empSearchClear) {
+      empSearchClear.style.display = currentEmpSearch ? "grid" : "none";
+    }
+    renderGrid();
+  });
+}
+
+if (empSearchClear) {
+  empSearchClear.addEventListener("click", () => {
+    playSound("click");
+    currentEmpSearch = "";
+    if (empSearchInput) empSearchInput.value = "";
+    empSearchClear.style.display = "none";
+    renderGrid();
+    if (empSearchInput) empSearchInput.focus();
+  });
+}
+
+document.querySelectorAll(".dept-filter-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    playSound("click");
+    document.querySelectorAll(".dept-filter-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentDeptFilter = btn.dataset.dept || "all";
+    renderGrid();
+  });
+});
+
 // Initial Setup
 setTheme(theme);
 applyLang();
 choose(selected);
 view("grid");
+loadTaskCounts();
 checkDbHealth();
 setInterval(checkDbHealth, 8000);
 </script>

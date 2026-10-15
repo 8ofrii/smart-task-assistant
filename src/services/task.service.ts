@@ -415,3 +415,16 @@ export async function resetTasksAndLogs() {
   await pool.query("DELETE FROM audit_logs");
   return { ok: true };
 }
+
+export async function getTaskCountsByEmployee(): Promise<Record<number, number>> {
+  const result = await pool.query(
+    `SELECT assigned_to, COUNT(*)::int AS count
+     FROM tasks
+     GROUP BY assigned_to`
+  );
+  const counts: Record<number, number> = {};
+  for (const row of result.rows) {
+    counts[row.assigned_to] = row.count;
+  }
+  return counts;
+}
