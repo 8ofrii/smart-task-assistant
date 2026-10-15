@@ -3351,6 +3351,10 @@
         <svg class="icon-svg" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
         <span data-i18n="tabInstructions">التعليمات والسياسات</span>
       </button>
+      <button class="settings-tab-btn" data-tab="tabPrompt" type="button">
+        <svg class="icon-svg" viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+        <span data-i18n="tabPrompt">موجه النظام (Prompt)</span>
+      </button>
       <button class="settings-tab-btn" data-tab="tabSystem" type="button">
         <svg class="icon-svg" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
         <span data-i18n="tabSystem">حالة النظام والقاعدة</span>
@@ -3470,7 +3474,50 @@
         </div>
       </div>
 
-      <!-- TAB 3: System Status & Database Actions -->
+      <!-- TAB: Custom System Prompt Editor & Playground -->
+      <div id="tabPrompt" class="settings-tab-pane">
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          <div class="settings-group">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+              <label class="settings-label" data-i18n="systemPromptLabel" style="margin-bottom:0; font-weight:800; display:flex; align-items:center; gap:5px;">
+                <svg class="icon-svg" viewBox="0 0 24 24" style="width:14px;height:14px;color:var(--brand);"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+                <span>محرر موجه النظام (System Prompt Editor):</span>
+              </label>
+              <div style="display:flex; gap:6px;">
+                <button id="copyPromptBtn" class="icon-btn" type="button" title="نسخ الموجه" style="padding:2.5px 8px; font-size:11px;">
+                  <svg class="icon-svg" viewBox="0 0 24 24" style="width:11px;height:11px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  <span data-i18n="copyPrompt">نسخ</span>
+                </button>
+                <button id="resetPromptBtn" class="icon-btn" type="button" title="استعادة الموجه الافتراضي" style="padding:2.5px 8px; font-size:11px;">
+                  <svg class="icon-svg" viewBox="0 0 24 24" style="width:11px;height:11px;"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+                  <span data-i18n="resetPrompt">استعادة الافتراضي</span>
+                </button>
+              </div>
+            </div>
+            <p class="settings-hint" data-i18n="systemPromptHint">
+              يمكنك كتابة وتعديل التوجيهات التي تُرسل إلى نموذج الذكاء الاصطناعي لتحديد طريقة تحليل الطلبات وتصنيف المهام واستخراج الأسماء والتواريخ.
+            </p>
+            <textarea id="systemPromptEditor" class="settings-textarea" rows="10" style="font-family: monospace; font-size: 11px; line-height: 1.45; direction: ltr; text-align: left;"></textarea>
+          </div>
+
+          <!-- Prompt Playground / Quick Live Test -->
+          <div class="settings-group" style="padding: 12px; background: var(--panel-tint); border: 1px solid var(--line); border-radius: 10px;">
+            <label class="settings-label" style="font-size:12px; margin-bottom:6px; display:flex; align-items:center; gap:5px;">
+              <svg class="icon-svg" viewBox="0 0 24 24" style="width:13px;height:13px;color:#f59e0b;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              <span data-i18n="promptTestTitle">تجربة الموجه واختباره مباشرة (Prompt Playground):</span>
+            </label>
+            <div style="display: flex; gap: 8px;">
+              <input type="text" id="testPromptInput" class="settings-input" placeholder="اكتب جملة تجريبية (مثل: ضيف مهمه لخالد بعد 3 ايام العصر)" style="font-size:12px; padding:6px 10px; flex:1;">
+              <button id="runPromptTestBtn" class="save-settings-btn" type="button" style="padding:6px 14px; font-size:11px; white-space:nowrap;">
+                <span data-i18n="promptTestBtn">تحليل واختبار</span>
+              </button>
+            </div>
+            <pre id="testPromptOutput" style="display:none; margin-top:8px; padding:8px; background:var(--bg); border:1px solid var(--line); border-radius:6px; font-size:11px; font-family:monospace; max-height:120px; overflow:auto; direction:ltr; text-align:left; color:var(--fg);"></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: System Status & Database Actions -->
       <div id="tabSystem" class="settings-tab-pane">
         <div class="system-stats-grid">
           <div class="stat-box">
@@ -3731,7 +3778,14 @@ const i18n = {
     settingsModalTitle: "إعدادات وتخصيص النظام",
     tabModel: "نموذج الذكاء الاصطناعي",
     tabInstructions: "التعليمات والسياسات",
+    tabPrompt: "موجه النظام (Prompt)",
     tabSystem: "حالة النظام والقاعدة",
+    systemPromptLabel: "محرر موجه النظام (System Prompt Editor):",
+    systemPromptHint: "اكتب أو عدّل التوجيهات التي تُرسل إلى نموذج الذكاء الاصطناعي لتحديد طريقة تحليل الطلبات وتصنيف المهام واستخراج الأسماء والتواريخ.",
+    copyPrompt: "نسخ",
+    resetPrompt: "استعادة الافتراضي",
+    promptTestTitle: "تجربة الموجه واختباره مباشرة (Prompt Playground):",
+    promptTestBtn: "تحليل واختبار",
     selectModelLabel: "اختر النموذج المستخدم (AI Model):",
     modelGpt4oDesc: "OpenAI · دقة تحليل عالية وفهم لغوي متقدم",
     modelGptMiniDesc: "OpenAI · سرعة استجابة فائقة واستهلاك منخفض",
@@ -3807,7 +3861,14 @@ const i18n = {
     settingsModalTitle: "System Settings & Customization",
     tabModel: "AI Model",
     tabInstructions: "Instructions & Policy",
+    tabPrompt: "System Prompt",
     tabSystem: "System & Database",
+    systemPromptLabel: "System Prompt Editor:",
+    systemPromptHint: "Type and customize the instructions sent to the AI model to direct parsing, extraction, and intent classification.",
+    copyPrompt: "Copy",
+    resetPrompt: "Reset Default",
+    promptTestTitle: "Prompt Playground & Live Test:",
+    promptTestBtn: "Test Parse",
     selectModelLabel: "Choose AI Model:",
     modelGpt4oDesc: "OpenAI · High precision and deep linguistic reasoning",
     modelGptMiniDesc: "OpenAI · Ultra-fast response with lightweight footprint",
@@ -4708,6 +4769,8 @@ const defaultPolicyText = `1. الدوام من الأحد إلى الخميس �
 6. تحديث حالة المهمة يومياً قبل نهاية الدوام.`;
 
 let customPolicyText = localStorage.getItem("ui-custom-policy") || defaultPolicyText;
+let defaultSystemPrompt = "";
+let customSystemPrompt = localStorage.getItem("ui-custom-prompt") || "";
 
 function openSettingsModal() {
   playSound("click");
@@ -4734,6 +4797,21 @@ function openSettingsModal() {
   if ($("policyEditorTextarea")) {
     $("policyEditorTextarea").value = customPolicyText;
   }
+
+  // Fetch settings & system prompt from server
+  fetch("/api/settings")
+    .then(r => r.json())
+    .then(data => {
+      if (data.defaultSystemPrompt) defaultSystemPrompt = data.defaultSystemPrompt;
+      if ($("systemPromptEditor")) {
+        $("systemPromptEditor").value = customSystemPrompt || data.systemPrompt || defaultSystemPrompt;
+      }
+    })
+    .catch(() => {
+      if ($("systemPromptEditor") && customSystemPrompt) {
+        $("systemPromptEditor").value = customSystemPrompt;
+      }
+    });
 
   // Init system displays
   if ($("systemModelDisplay")) $("systemModelDisplay").textContent = activeModel;
@@ -4792,6 +4870,62 @@ if ($("resetPolicyBtn")) {
   };
 }
 
+// Reset Policy to Default
+if ($("resetPolicyBtn")) {
+  $("resetPolicyBtn").onclick = () => {
+    playSound("click");
+    $("policyEditorTextarea").value = defaultPolicyText;
+    showToast(lang === "ar" ? "تمت استعادة نص السياسة الافتراضي" : "Policy reset to default", "check");
+  };
+}
+
+// Reset Prompt to Default
+if ($("resetPromptBtn")) {
+  $("resetPromptBtn").onclick = () => {
+    playSound("click");
+    if ($("systemPromptEditor")) {
+      $("systemPromptEditor").value = defaultSystemPrompt;
+    }
+    showToast(lang === "ar" ? "تمت استعادة موجه النظام الافتراضي" : "System prompt reset to default", "check");
+  };
+}
+
+// Copy Prompt to Clipboard
+if ($("copyPromptBtn")) {
+  $("copyPromptBtn").onclick = () => {
+    playSound("click");
+    const val = $("systemPromptEditor") ? $("systemPromptEditor").value : "";
+    navigator.clipboard.writeText(val).then(() => {
+      showToast(T("copied"), "check");
+    });
+  };
+}
+
+// Prompt Playground & Live Test Parser
+if ($("runPromptTestBtn")) {
+  $("runPromptTestBtn").onclick = async () => {
+    const testInput = $("testPromptInput").value.trim();
+    if (!testInput) return;
+    playSound("click");
+    $("runPromptTestBtn").disabled = true;
+    $("testPromptOutput").style.display = "block";
+    $("testPromptOutput").textContent = lang === "ar" ? "جارٍ التحليل عبر النموذج..." : "Analyzing...";
+    try {
+      const res = await fetch("/api/test-parse", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: testInput })
+      });
+      const data = await res.json();
+      $("testPromptOutput").textContent = JSON.stringify(data, null, 2);
+    } catch (err) {
+      $("testPromptOutput").textContent = "Error: " + err.message;
+    } finally {
+      $("runPromptTestBtn").disabled = false;
+    }
+  };
+}
+
 // Clear DB from Settings Modal
 if ($("clearDbBtnModal")) {
   $("clearDbBtnModal").onclick = async () => {
@@ -4824,10 +4958,12 @@ if ($("saveSettingsBtn")) {
     activeModel = chosenModel;
     activeProvider = $("llmProviderSelect").value;
     customPolicyText = $("policyEditorTextarea").value.trim() || defaultPolicyText;
+    customSystemPrompt = $("systemPromptEditor") ? $("systemPromptEditor").value.trim() : "";
 
     localStorage.setItem("ui-model", activeModel);
     localStorage.setItem("ui-provider", activeProvider);
     localStorage.setItem("ui-custom-policy", customPolicyText);
+    localStorage.setItem("ui-custom-prompt", customSystemPrompt);
 
     // Update active model badge in sidebar
     if ($("activeModelBadge")) {
@@ -4839,7 +4975,11 @@ if ($("saveSettingsBtn")) {
       await fetch("/api/settings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ model: activeModel, llmProvider: activeProvider })
+        body: JSON.stringify({
+          model: activeModel,
+          llmProvider: activeProvider,
+          systemPrompt: customSystemPrompt
+        })
       });
     } catch (err) {
       console.warn("Could not sync settings with server, saved locally:", err);

@@ -100,6 +100,24 @@ Security:
 Return valid JSON only.
 `.trim();
 
+let activeSystemPrompt: string = SYSTEM_PROMPT;
+
+export function getSystemPrompt(): string {
+  return activeSystemPrompt;
+}
+
+export function getDefaultSystemPrompt(): string {
+  return SYSTEM_PROMPT;
+}
+
+export function setCustomPrompt(customPrompt?: string | null): void {
+  if (!customPrompt || !customPrompt.trim()) {
+    activeSystemPrompt = SYSTEM_PROMPT;
+  } else {
+    activeSystemPrompt = customPrompt.trim();
+  }
+}
+
 function extractNameFallback(message: string): string | null {
   // English regex patterns
   const enMatch = message.match(
@@ -468,7 +486,7 @@ async function parseWithOpenAI(message: string): Promise<ParsedMessage> {
     temperature: 0,
     response_format: { type: "json_object" },
     messages: [
-      { role: "system", content: SYSTEM_PROMPT },
+      { role: "system", content: activeSystemPrompt },
       { role: "user", content: message }
     ]
   });
@@ -489,7 +507,7 @@ async function parseWithGemini(message: string): Promise<ParsedMessage> {
   });
 
   const result = await model.generateContent(
-    `${SYSTEM_PROMPT}\n\nUser message:\n${message}`
+    `${activeSystemPrompt}\n\nUser message:\n${message}`
   );
 
   const raw = result.response.text().trim();

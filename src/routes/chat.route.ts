@@ -1,7 +1,12 @@
 import { Router } from "express";
 import { z } from "zod";
 import { config } from "../config.js";
-import { parseMessage } from "../services/llm.service.js";
+import {
+  parseMessage,
+  getSystemPrompt,
+  getDefaultSystemPrompt,
+  setCustomPrompt
+} from "../services/llm.service.js";
 import { answerPolicyQuestion } from "../services/policy.service.js";
 import { DateTime } from "luxon";
 import {
@@ -301,13 +306,15 @@ router.get("/api/settings", (_req, res) => {
     timezone: APP_TIMEZONE,
     now: DateTime.now().setZone(APP_TIMEZONE).toISO(),
     llmProvider: config.llmProvider,
-    model: config.llmProvider === "gemini" ? config.geminiModel : config.openaiModel
+    model: config.llmProvider === "gemini" ? config.geminiModel : config.openaiModel,
+    systemPrompt: getSystemPrompt(),
+    defaultSystemPrompt: getDefaultSystemPrompt()
   });
 });
 
 router.post("/api/settings", (req, res) => {
   try {
-    const { model, llmProvider } = req.body;
+    const { model, llmProvider, systemPrompt } = req.body;
     if (model && typeof model === "string") {
       config.openaiModel = model.trim();
       if (config.llmProvider === "gemini") {
@@ -317,14 +324,35 @@ router.post("/api/settings", (req, res) => {
     if (llmProvider && ["openai", "openrouter", "gemini", "fallback"].includes(llmProvider)) {
       config.llmProvider = llmProvider;
     }
+    if (systemPrompt !== undefined) {
+      setCustomPrompt(typeof systemPrompt === "string" ? systemPrompt : null);
+    }
     return res.json({
       ok: true,
       message: "Settings updated successfully",
       llmProvider: config.llmProvider,
-      model: config.llmProvider === "gemini" ? config.geminiModel : config.openaiModel
+      model: config.llmProvider === "gemini" ? config.geminiModel : config.openaiModel,
+      systemPrompt: getSystemPrompt()
     });
   } catch (error) {
     return res.status(500).json({ ok: false, error: "Failed to update settings" });
+  }
+});
+
+router.post("/api/test-parse", async (req, res) => {
+  try {
+    const { message } = req.body;
+    if (!message || typeof message !== "string") {
+      return res.status(400).json({ ok: false, error: "Message is required" });
+    }
+    const parseResult = await parseMessage(message);
+    return res.json({
+      ok: true,
+      source: parseResult.source,
+      data: parseResult.data
+    });
+  } catch (error) {
+    return res.status(500).json({ ok: false, error: (error as Error).message });
   }
 });
 
