@@ -32,6 +32,18 @@ describe("LLM & Fallback Message Parsing", { timeout: 30000 }, () => {
     expect(res4.data.intent).toBe("list_tasks");
     expect(res4.data.listScope).toBe("employee");
     expect(res4.data.targetEmployeeName).toBe("Abdulrahman");
+
+    const q5 = "وش مهام نورا؟";
+    const res5 = await parseMessage(q5);
+    expect(res5.data.intent).toBe("list_tasks");
+    expect(res5.data.listScope).toBe("employee");
+    expect(["نورة", "نورا"]).toContain(res5.data.targetEmployeeName);
+
+    const q6 = "هل عبدالرحمان عنده مهام؟";
+    const res6 = await parseMessage(q6);
+    expect(res6.data.intent).toBe("list_tasks");
+    expect(res6.data.listScope).toBe("employee");
+    expect(["عبدالرحمن", "عبدالرحمان"]).toContain(res6.data.targetEmployeeName);
   });
 
   it("parses task status update policy question without confusing with self tasks", async () => {
@@ -63,5 +75,17 @@ describe("LLM & Fallback Message Parsing", { timeout: 30000 }, () => {
     const res2 = await parseMessage("سجل لعبدالرحمن اجتماع مع المالية بعد بكرة 1 الظهر");
     expect(res2.data.intent).toBe("create_task");
     expect(["عبدالرحمن", "Abdulrahman"]).toContain(res2.data.assigneeName);
+  });
+
+  it("parses dialect relative dates like كمان 3 ايام and عقب باكر correctly", async () => {
+    const res1 = await parseMessage("سجل مهمة لخالد كمان 3 ايام يراجع عرض السعر");
+    expect(res1.data.intent).toBe("create_task");
+    expect(["خالد", "Khaled"]).toContain(res1.data.assigneeName);
+    expect(["كمان 3 ايام", "كمان 3 أيام"]).toContain(res1.data.dateExpression);
+    expect(res1.data.description).toBe("يراجع عرض السعر");
+
+    const res2 = await parseMessage("سجل مهمة كمان ٣ ايام يراجع العقد");
+    expect(res2.data.intent).toBe("create_task");
+    expect(["كمان ٣ ايام", "كمان 3 ايام", "كمان 3 أيام", "كمان ٣ أيام"]).toContain(res2.data.dateExpression);
   });
 });

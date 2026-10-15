@@ -9,6 +9,7 @@ import type {
 } from "../types/index.js";
 import { detectPolicyTopic } from "./policy.service.js";
 import { normalizeArabic } from "../utils/arabic.js";
+import { extractDateExpression } from "./date.service.js";
 
 const ParsedMessageSchema = z.object({
   intent: z
@@ -72,7 +73,7 @@ For create_task:
 - assigneeName: name stated by the user (e.g. "Khaled", "خالد", "Noura"), or null when the task is for the sender (e.g. "remind me", "ذكرني").
 - assigneeDepartment: department stated by the user, otherwise null.
 - description: ONLY the actual task content. Remove command words, employee name, date and time.
-- dateExpression: relative-date phrase, such as "tomorrow", "next Sunday", "Friday", "بكرة", "بعد بكرة", "الأحد الجاي", "الجمعة", "بعد 3 أيام", "بعد يومين", "بعد أسبوع", "in 3 days".
+- dateExpression: relative-date phrase, such as "tomorrow", "next Sunday", "Friday", "بكرة", "بعد بكرة", "الأحد الجاي", "الجمعة", "بعد 3 أيام", "كمان 3 أيام", "كمان يومين", "كمان أسبوع", "عقب باكر", "خلال 3 أيام", "in 3 days".
 - timeExpression: phrases such as "10 AM", "afternoon", "1 PM", "العصر", "الظهر", "الساعة 10", "الساعة الرابعة مساءا", "4:30 PM", "الرابعة والنصف عصرا".
 
 For list_tasks:
@@ -215,9 +216,11 @@ function cleanTaskDescription(
     /انشئ|أنشئ/gu,
     /مهمه|مهمة/gu,
     /تاسك/gu,
-    /(?:بعد|خلال)\s*(?:[٠-٩0-9]+|ثلاثة|ثلاث|اربعة|اربع|خمسة|خمس|ستة|ست|سبعة|سبع|ثمانية|ثمان|تسعة|تسع|عشرة|عشر)\s*(?:أيام|ايام|يوم|اسابيع|أسابيع|اسبوع|أسبوع)/gu,
+    /(?:(?:بعد|خلال|في\s*خلال|في\s*غضون|كمان|عقب|ورا|قدام)\s*(?:[٠-٩0-9]+|واحد|واحدة|اثنين|اتنين|يومين|ثلاثة|ثلاث|تلاتة|تلات|اربعة|اربع|أربعة|أربع|خمسة|خمس|ستة|ست|سبعة|سبع|ثمانية|ثمان|تمانية|تمان|تسعة|تسع|عشرة|عشر)\s*(?:أيام|ايام|يوم|اسابيع|أسابيع|اسبوع|أسبوع|اشهر|أشهر|شهور|شهر)?|(?:بعد|كمان|عقب)\s+(?:اسبوعين|أسبوعين|اسبوع|أسبوع|يومين|شهرين|شهر|يوم)|(?:عقب|بعد)\s+(?:باكر|باجر|بكره|بكرة|غد)|(?:[٠-٩0-9]+|ثلاثة|ثلاث|تلاتة|تلات|اربعة|اربع|أربعة|أربع|خمسة|خمس|ستة|ست|سبعة|سبع|ثمانية|ثمان|تمانية|تمان|تسعة|تسع|عشرة|عشر)\s*(?:أيام|ايام|يوم|اسابيع|أسابيع|اسبوع|أسبوع))/giu,
+    /عقب\s+(?:باكر|باجر)/gu,
+    /باكر|باجر/gu,
     /بعد\s+(?:اسبوعين|أسبوعين|اسبوع|أسبوع|يومين)/gu,
-    /بعد\s+(?:بكره|بكرة)/gu,
+    /بعد\s+(?:بكره|بكرة|غد)/gu,
     /بكره|بكرة/gu,
     /(?:الاحد|الأحد)\s+(?:الجاي|القادم)/gu,
     /الجمعه|الجمعة/gu,
@@ -270,6 +273,8 @@ function cleanTaskDescription(
 const CANONICAL_NAMES: Record<string, string> = {
   "عبدالرحمن": "عبدالرحمن",
   "عبد الرحمن": "عبدالرحمن",
+  "عبدالرحمان": "عبدالرحمن",
+  "عبد الرحمان": "عبدالرحمن",
   "abdulrahman": "Abdulrahman",
   "abdelrahman": "Abdulrahman",
   "خالد": "خالد",
@@ -279,14 +284,18 @@ const CANONICAL_NAMES: Record<string, string> = {
   "fahad": "Fahad",
   "نورة": "نورة",
   "نوره": "نورة",
+  "نورا": "نورة",
   "noura": "Noura",
   "nora": "Noura",
+  "norah": "Noura",
   "سارة": "سارة",
   "ساره": "سارة",
+  "سارا": "سارة",
   "sara": "Sara",
   "sarah": "Sara",
   "منيرة": "منيرة",
   "منيره": "منيرة",
+  "منيرا": "منيرة",
   "monira": "Monira",
   "munira": "Monira",
   "mounira": "Monira",
@@ -335,14 +344,19 @@ export function detectEmployeeTaskQuery(
   const arNames = [
     "عبدالرحمن",
     "عبد الرحمن",
+    "عبدالرحمان",
+    "عبد الرحمان",
     "خالد",
     "فهد",
     "نورة",
     "نوره",
+    "نورا",
     "سارة",
     "ساره",
+    "سارا",
     "منيرة",
     "منيره",
+    "منيرا",
     "أحمد",
     "احمد"
   ];
@@ -515,35 +529,7 @@ function fallbackParser(message: string): ParsedMessage {
       targetDepartment = "المشاريع";
     }
 
-    let dateExpression: string | null = null;
-
-    const daysPattern = /(?:بعد|خلال)\s*(?:[٠-٩0-9]+|ثلاثة|ثلاث|اربعة|اربع|خمسة|خمس|ستة|ست|سبعة|سبع|ثمانية|ثمان|تسعة|تسع|عشرة|عشر)\s*(?:أيام|ايام|يوم|اسابيع|أسابيع|اسبوع|أسبوع)|بعد\s+(?:اسبوعين|أسبوعين|اسبوع|أسبوع|يومين)|in\s+\d+\s+days|after\s+\d+\s+days/i;
-    const daysMatch = message.match(daysPattern);
-
-    if (daysMatch) {
-      dateExpression = daysMatch[0].trim();
-    } else if (
-      normalized.includes("بعد بكره") ||
-      lower.includes("day after tomorrow") ||
-      lower.includes("after tomorrow")
-    ) {
-      dateExpression = "بعد بكرة";
-    } else if (
-      normalized.includes("بكره") ||
-      lower.includes("tomorrow")
-    ) {
-      dateExpression = "بكرة";
-    } else if (
-      normalized.includes("الاحد الجاي") ||
-      lower.includes("next sunday")
-    ) {
-      dateExpression = "الأحد الجاي";
-    } else if (
-      normalized.includes("الجمعه") ||
-      lower.includes("friday")
-    ) {
-      dateExpression = "الجمعة";
-    }
+    const dateExpression: string | null = extractDateExpression(message);
 
     let timeExpression: string | null = null;
 
@@ -764,14 +750,25 @@ function normalizeParsedMessage(
     return parsed;
   }
 
-  if (
-    parsed.intent === "create_task" &&
-    (!parsed.description || !parsed.description.trim())
-  ) {
-    parsed.description = cleanTaskDescription(
-      message,
-      parsed.assigneeName
-    );
+  if (parsed.intent === "create_task") {
+    if (!parsed.dateExpression) {
+      const detectedDate = extractDateExpression(message);
+      if (detectedDate) {
+        parsed.dateExpression = detectedDate;
+      }
+    }
+
+    if (!parsed.description || !parsed.description.trim()) {
+      parsed.description = cleanTaskDescription(
+        message,
+        parsed.assigneeName
+      );
+    } else if (parsed.dateExpression) {
+      parsed.description = parsed.description
+        .replace(new RegExp(parsed.dateExpression.trim(), "gi"), " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
   }
 
   if (parsed.intent === "list_tasks" && !parsed.listScope) {

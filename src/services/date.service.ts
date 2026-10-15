@@ -221,7 +221,77 @@ export function parseTime(value?: string | null): { hour: number; minute: number
   return { hour, minute };
 }
 
-function resolveRelativeDate(dateText: string, now: DateTime): DateTime {
+// Multi-day & relative date phrases pattern
+export const RELATIVE_DATE_PATTERN =
+  /(?:(?:بعد|خلال|في\s*خلال|في\s*غضون|كمان|عقب|ورا|قدام)\s*(?:[٠-٩0-9]+|واحد|واحدة|اثنين|اتنين|يومين|ثلاثة|ثلاث|تلاتة|تلات|اربعة|اربع|أربعة|أربع|خمسة|خمس|ستة|ست|سبعة|سبع|ثمانية|ثمان|تمانية|تمان|تسعة|تسع|عشرة|عشر)\s*(?:أيام|ايام|يوم|اسابيع|أسابيع|اسبوع|أسبوع|اشهر|أشهر|شهور|شهر)?|(?:بعد|كمان|عقب)\s+(?:اسبوعين|أسبوعين|اسبوع|أسبوع|يومين|شهرين|شهر|يوم)|(?:عقب|بعد)\s+(?:باكر|باجر|بكره|بكرة|غد)|(?:[٠-٩0-9]+|ثلاثة|ثلاث|تلاتة|تلات|اربعة|اربع|أربعة|أربع|خمسة|خمس|ستة|ست|سبعة|سبع|ثمانية|ثمان|تمانية|تمان|تسعة|تسع|عشرة|عشر)\s*(?:أيام|ايام|يوم|اسابيع|أسابيع|اسبوع|أسبوع)|in\s+\d+\s+(?:days?|weeks?|months?)|after\s+\d+\s+(?:days?|weeks?|months?))/i;
+
+export function extractDateExpression(message: string): string | null {
+  const normalized = normalizeArabic(message);
+  const lower = message.toLowerCase();
+
+  // 1. Relative phrases with prefixes (كمان, بعد, عقب, خلال, etc.)
+  const match = message.match(RELATIVE_DATE_PATTERN);
+  if (match) {
+    return match[0].trim();
+  }
+
+  // 2. Day after tomorrow
+  if (
+    normalized.includes("بعد بكره") ||
+    normalized.includes("بعد بكرة") ||
+    normalized.includes("بعد باكر") ||
+    normalized.includes("بعد باجر") ||
+    normalized.includes("عقب باكر") ||
+    normalized.includes("عقب باجر") ||
+    normalized.includes("عقب بكره") ||
+    normalized.includes("عقب بكرة") ||
+    normalized.includes("بعد غد") ||
+    lower.includes("day after tomorrow") ||
+    lower.includes("after tomorrow")
+  ) {
+    return "بعد بكرة";
+  }
+
+  // 3. Tomorrow
+  if (
+    normalized.includes("بكره") ||
+    normalized.includes("بكرة") ||
+    normalized.includes("باكر") ||
+    normalized.includes("باجر") ||
+    normalized.includes("غدا") ||
+    lower.includes("tomorrow")
+  ) {
+    return "بكرة";
+  }
+
+  // 4. Weekdays
+  for (const [dayName] of Object.entries(WEEKDAYS)) {
+    const normDay = normalizeArabic(dayName);
+    if (normalized.includes(normDay) || lower.includes(dayName)) {
+      if (
+        normalized.includes(`${normDay} الجاي`) ||
+        normalized.includes(`${normDay} القادم`) ||
+        lower.includes(`next ${dayName}`)
+      ) {
+        return `${dayName} الجاي`;
+      }
+      return dayName;
+    }
+  }
+
+  // 5. Today
+  if (
+    normalized.includes("اليوم") ||
+    normalized.includes("النهارده") ||
+    lower.includes("today")
+  ) {
+    return "اليوم";
+  }
+
+  return null;
+}
+
+export function resolveRelativeDate(dateText: string, now: DateTime): DateTime {
   const date = now.startOf("day");
   const lower = dateText.toLowerCase();
   const normalized = normalizeArabic(dateText);
@@ -245,77 +315,170 @@ function resolveRelativeDate(dateText: string, now: DateTime): DateTime {
     if (parsed.isValid) return parsed.startOf("day");
   }
 
-  // Relative offset in days/weeks: e.g. "بعد 3 ايام", "بعد 5 أيام", "بعد يومين", "بعد اسبوع", "after 3 days", "in 3 days"
   const arabicNumText = arabicDigitsToEnglish(normalized);
 
+  // Two weeks
   if (
     normalized.includes("بعد اسبوعين") ||
     normalized.includes("بعد أسبوعين") ||
+    normalized.includes("كمان اسبوعين") ||
+    normalized.includes("كمان أسبوعين") ||
+    normalized.includes("عقب اسبوعين") ||
+    normalized.includes("عقب أسبوعين") ||
     lower.includes("after two weeks") ||
     lower.includes("in two weeks")
   ) return date.plus({ weeks: 2 });
 
+  // One week
   if (
     normalized.includes("بعد اسبوع") ||
     normalized.includes("بعد أسبوع") ||
+    normalized.includes("كمان اسبوع") ||
+    normalized.includes("كمان أسبوع") ||
+    normalized.includes("عقب اسبوع") ||
+    normalized.includes("عقب أسبوع") ||
     lower.includes("after a week") ||
     lower.includes("in a week") ||
-    lower.includes("after 1 week")
+    lower.includes("after 1 week") ||
+    lower.includes("in 1 week")
   ) return date.plus({ weeks: 1 });
 
+  // Two months
+  if (
+    normalized.includes("بعد شهرين") ||
+    normalized.includes("كمان شهرين") ||
+    normalized.includes("عقب شهرين") ||
+    lower.includes("after two months") ||
+    lower.includes("in two months")
+  ) return date.plus({ months: 2 });
+
+  // One month
+  if (
+    normalized.includes("بعد شهر") ||
+    normalized.includes("كمان شهر") ||
+    normalized.includes("عقب شهر") ||
+    lower.includes("after a month") ||
+    lower.includes("in a month") ||
+    lower.includes("after 1 month") ||
+    lower.includes("in 1 month")
+  ) return date.plus({ months: 1 });
+
+  // Two days
   if (
     normalized.includes("بعد يومين") ||
+    normalized.includes("كمان يومين") ||
+    normalized.includes("عقب يومين") ||
+    normalized.includes("ورا يومين") ||
+    normalized.includes("قدام يومين") ||
     lower.includes("after two days") ||
     lower.includes("in two days")
   ) return date.plus({ days: 2 });
 
-  const daysMatch = arabicNumText.match(/(?:بعد|خلال|in|after)\s*(\d+)\s*(?:ايام|أيام|يوم|days?)/i);
+  // One day
+  if (
+    normalized.includes("بعد يوم") ||
+    normalized.includes("كمان يوم") ||
+    normalized.includes("عقب يوم") ||
+    lower.includes("after a day") ||
+    lower.includes("in a day") ||
+    lower.includes("after 1 day") ||
+    lower.includes("in 1 day")
+  ) return date.plus({ days: 1 });
+
+  // Digits with days (e.g. "كمان 3 ايام", "كمان ٣ ايام", "كمان 3", "بعد 3 ايام", "عقب 3 ايام", "خلال 3 ايام", "في خلال 3 ايام", "3 ايام", "in 3 days", "3 more days")
+  const daysMatch = arabicNumText.match(
+    /(?:(?:بعد|خلال|في\s*خلال|في\s*غضون|كمان|عقب|ورا|قدام|in|after)\s*(\d+)\s*(?:ايام|أيام|يوم|days?)?|(\d+)\s*(?:ايام|أيام|يوم|days?))/i
+  );
   if (daysMatch) {
-    const numDays = Number(daysMatch[1]);
-    return date.plus({ days: numDays });
+    const numDays = Number(daysMatch[1] || daysMatch[2]);
+    if (!isNaN(numDays) && numDays > 0) {
+      return date.plus({ days: numDays });
+    }
   }
 
-  const weeksMatch = arabicNumText.match(/(?:بعد|خلال|in|after)\s*(\d+)\s*(?:اسابيع|أسابيع|اسبوع|أسبوع|weeks?)/i);
+  // Digits with weeks
+  const weeksMatch = arabicNumText.match(
+    /(?:(?:بعد|خلال|في\s*خلال|في\s*غضون|كمان|عقب|ورا|قدام|in|after)\s*(\d+)\s*(?:اسابيع|أسابيع|اسبوع|أسبوع|weeks?)?|(\d+)\s*(?:اسابيع|أسابيع|اسبوع|أسبوع|weeks?))/i
+  );
   if (weeksMatch) {
-    const numWeeks = Number(weeksMatch[1]);
-    return date.plus({ weeks: numWeeks });
+    const numWeeks = Number(weeksMatch[1] || weeksMatch[2]);
+    if (!isNaN(numWeeks) && numWeeks > 0) {
+      return date.plus({ weeks: numWeeks });
+    }
   }
 
+  // Digits with months
+  const monthsMatch = arabicNumText.match(
+    /(?:(?:بعد|خلال|في\s*خلال|في\s*غضون|كمان|عقب|ورا|قدام|in|after)\s*(\d+)\s*(?:اشهر|أشهر|شهور|شهر|months?)?|(\d+)\s*(?:اشهر|أشهر|شهور|شهر|months?))/i
+  );
+  if (monthsMatch) {
+    const numMonths = Number(monthsMatch[1] || monthsMatch[2]);
+    if (!isNaN(numMonths) && numMonths > 0) {
+      return date.plus({ months: numMonths });
+    }
+  }
+
+  // Word-based numbers for days
   const wordDays: [string, number][] = [
-    ["ثلاثه", 3], ["ثلاثة", 3], ["تلاته", 3], ["three", 3],
-    ["اربعه", 4], ["أربعة", 4], ["four", 4],
-    ["خمسه", 5], ["خمسة", 5], ["five", 5],
-    ["سته", 6], ["ستة", 6], ["six", 6],
-    ["سبعه", 7], ["سبعة", 7], ["seven", 7],
-    ["ثمانيه", 8], ["ثمانية", 8], ["تمانية", 8], ["eight", 8],
-    ["تسعه", 9], ["تسعة", 9], ["nine", 9],
-    ["عشره", 10], ["عشرة", 10], ["ten", 10]
+    ["ثلاثه", 3], ["ثلاثة", 3], ["تلاته", 3], ["تلاتة", 3], ["تلات", 3], ["ثلاث", 3], ["three", 3],
+    ["اربعه", 4], ["أربعة", 4], ["اربع", 4], ["أربع", 4], ["four", 4],
+    ["خمسه", 5], ["خمسة", 5], ["خمس", 5], ["five", 5],
+    ["سته", 6], ["ستة", 6], ["ست", 6], ["six", 6],
+    ["سبعه", 7], ["سبعة", 7], ["سبع", 7], ["seven", 7],
+    ["ثمانيه", 8], ["ثمانية", 8], ["تمانية", 8], ["تمان", 8], ["ثمان", 8], ["eight", 8],
+    ["تسعه", 9], ["تسعة", 9], ["تسع", 9], ["nine", 9],
+    ["عشره", 10], ["عشرة", 10], ["عشر", 10], ["ten", 10]
   ];
   for (const [w, n] of wordDays) {
-    if (normalized.includes(`بعد ${normalizeArabic(w)}`)) {
+    const nw = normalizeArabic(w);
+    if (
+      normalized.includes(`بعد ${nw}`) ||
+      normalized.includes(`كمان ${nw}`) ||
+      normalized.includes(`عقب ${nw}`) ||
+      normalized.includes(`خلال ${nw}`) ||
+      normalized.includes(`ورا ${nw}`) ||
+      normalized.includes(`قدام ${nw}`) ||
+      normalized.includes(`${nw} ايام`) ||
+      normalized.includes(`${nw} أيام`) ||
+      normalized.includes(`${nw} يوم`) ||
+      lower.includes(`after ${w} days`) ||
+      lower.includes(`in ${w} days`) ||
+      lower.includes(`${w} more days`)
+    ) {
       return date.plus({ days: n });
     }
   }
 
+  // Day after tomorrow
   if (
     normalized.includes("بعد بكره") ||
     normalized.includes("بعد بكرة") ||
+    normalized.includes("بعد باكر") ||
+    normalized.includes("بعد باجر") ||
+    normalized.includes("عقب باكر") ||
+    normalized.includes("عقب باجر") ||
+    normalized.includes("عقب بكره") ||
+    normalized.includes("عقب بكرة") ||
     normalized.includes("بعد غد") ||
     lower.includes("day after tomorrow") ||
     lower.includes("after tomorrow")
   ) return date.plus({ days: 2 });
 
+  // Tomorrow
   if (
     normalized.includes("بكره") ||
     normalized.includes("بكرة") ||
     normalized.includes("باكر") ||
+    normalized.includes("باجر") ||
     normalized.includes("غدا") ||
     normalized === "غد" ||
     lower.includes("tomorrow")
   ) return date.plus({ days: 1 });
 
+  // Today
   if (
     normalized.includes("اليوم") ||
+    normalized.includes("النهارده") ||
     lower.includes("today") ||
     dateText === ""
   ) return date;

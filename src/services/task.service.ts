@@ -40,17 +40,46 @@ export const EMP_AR_NAMES: Record<string, string> = {
   "monira": "منيرة",
   "mounira": "منيرة",
   "munira": "منيرة",
+  "منيرا": "منيرة",
+  "منيره": "منيرة",
+  "منيرة": "منيرة",
   "sara": "سارة",
   "sarah": "سارة",
+  "سارا": "سارة",
+  "ساره": "سارة",
+  "سارة": "سارة",
   "fahad": "فهد",
+  "فهد": "فهد",
   "khaled": "خالد",
   "khalid": "خالد",
+  "خالد": "خالد",
   "noura": "نورة",
   "nora": "نورة",
+  "norah": "نورة",
+  "نورا": "نورة",
+  "نوره": "نورة",
+  "نورة": "نورة",
   "abdulrahman": "عبدالرحمن",
   "abdelrahman": "عبدالرحمن",
-  "ahmed": "أحمد"
+  "عبدالرحمان": "عبدالرحمن",
+  "عبد الرحمان": "عبدالرحمن",
+  "عبد الرحمن": "عبدالرحمن",
+  "عبدالرحمن": "عبدالرحمن",
+  "ahmed": "أحمد",
+  "احمد": "أحمد",
+  "أحمد": "أحمد"
 };
+
+export function normalizeEmployeeName(name: string): string {
+  let norm = normalizeArabic(name).toLowerCase().replace(/\s+/g, "");
+  // Map terminal 'ا' to 'ه' for common female names: نورا -> نوره, سارا -> ساره, منيرا -> منيره
+  if (norm.endsWith("ا") && norm.length > 2) {
+    norm = norm.slice(0, -1) + "ه";
+  }
+  // Map عبدالرحمان -> عبدالرحمن (remove dagger alif)
+  norm = norm.replace(/عبدالرحمان/g, "عبدالرحمن");
+  return norm;
+}
 
 export const DEPT_AR_NAMES: Record<string, string> = {
   "management": "الإدارة",
@@ -70,7 +99,7 @@ export async function findEmployeesByName(
 
   const rawLowerName = name.trim().toLowerCase();
   const mappedArName = EMP_AR_NAMES[rawLowerName] || name;
-  const normalizedName = normalizeArabic(mappedArName);
+  const normalizedName = normalizeEmployeeName(mappedArName);
 
   let mappedArDept = department;
   if (department) {
@@ -82,11 +111,12 @@ export async function findEmployeesByName(
     : null;
 
   return result.rows.filter((employee: Employee) => {
-    const empArNorm = normalizeArabic(employee.name);
+    const empArNorm = normalizeEmployeeName(employee.name);
     const empEnNorm = (EMP_EN_NAMES[employee.name] || "").toLowerCase();
 
     const nameMatches =
       empArNorm === normalizedName ||
+      empArNorm === normalizeEmployeeName(name) ||
       empArNorm.replace(/\s+/g, "") === normalizedName.replace(/\s+/g, "") ||
       empEnNorm === rawLowerName;
 

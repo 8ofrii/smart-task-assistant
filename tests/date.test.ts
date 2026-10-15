@@ -80,4 +80,46 @@ describe("Arabic date resolution", () => {
     expect(resolveDueDate("in 5 days", "10 AM", now).dueAt.toFormat("yyyy-LL-dd HH:mm"))
       .toBe("2026-10-18 10:00");
   });
+
+  it("resolves dialect relative dates such as كمان 3 ايام and عقب باكر", () => {
+    // 1. Monday baseline: 2026-10-12 (Monday) + 3 days -> 2026-10-15 (Thursday) (no Friday shift)
+    const monday = DateTime.fromISO("2026-10-12T10:00:00", { zone: APP_TIMEZONE });
+    const mondayRes = resolveDueDate("كمان 3 ايام", "الساعة 10", monday);
+    expect(mondayRes.movedFromFriday).toBe(false);
+    expect(mondayRes.dueAt.toFormat("yyyy-LL-dd HH:mm")).toBe("2026-10-15 10:00");
+
+    // 2. Arabic digits: كمان ٣ ايام
+    const arDigitsRes = resolveDueDate("كمان ٣ ايام", "الساعة 10", monday);
+    expect(arDigitsRes.movedFromFriday).toBe(false);
+    expect(arDigitsRes.dueAt.toFormat("yyyy-LL-dd HH:mm")).toBe("2026-10-15 10:00");
+
+    // 3. Tuesday baseline: 2026-10-13 (Tuesday) + 3 days -> Friday -> rolled to Saturday 2026-10-17!
+    const resTuesday = resolveDueDate("كمان 3 ايام", "الساعة 10", now);
+    expect(resTuesday.movedFromFriday).toBe(true);
+    expect(resTuesday.dueAt.toFormat("yyyy-LL-dd HH:mm")).toBe("2026-10-17 10:00");
+
+    // 4. كمان يومين: 2026-10-13 (Tuesday) + 2 days -> 2026-10-15 (Thursday)
+    const res2Days = resolveDueDate("كمان يومين", "الساعة 10", now);
+    expect(res2Days.dueAt.toFormat("yyyy-LL-dd HH:mm")).toBe("2026-10-15 10:00");
+
+    // 5. كمان اسبوع: 2026-10-13 (Tuesday) + 1 week -> 2026-10-20 (Tuesday)
+    const res1Week = resolveDueDate("كمان اسبوع", "الساعة 10", now);
+    expect(res1Week.dueAt.toFormat("yyyy-LL-dd HH:mm")).toBe("2026-10-20 10:00");
+
+    // 6. Gulf dialect: عقب باكر (day after tomorrow)
+    const resAgabBakir = resolveDueDate("عقب باكر", "الساعة 10", now);
+    expect(resAgabBakir.dueAt.toFormat("yyyy-LL-dd HH:mm")).toBe("2026-10-15 10:00");
+
+    // 7. Gulf dialect: عقب 3 ايام
+    const resAgab3 = resolveDueDate("عقب 3 ايام", "الساعة 10", monday);
+    expect(resAgab3.dueAt.toFormat("yyyy-LL-dd HH:mm")).toBe("2026-10-15 10:00");
+
+    // 8. خلال 3 أيام
+    const resKhelal = resolveDueDate("خلال 3 أيام", "الساعة 10", monday);
+    expect(resKhelal.dueAt.toFormat("yyyy-LL-dd HH:mm")).toBe("2026-10-15 10:00");
+
+    // 9. 3 ايام (without preposition)
+    const resDirect = resolveDueDate("3 ايام", "الساعة 10", monday);
+    expect(resDirect.dueAt.toFormat("yyyy-LL-dd HH:mm")).toBe("2026-10-15 10:00");
+  });
 });
