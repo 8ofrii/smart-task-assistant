@@ -56,15 +56,20 @@ ON CONFLICT (id) DO UPDATE SET
   role = EXCLUDED.role;
 `;
 
-async function main() {
+export async function initDatabase(closePool: boolean = false): Promise<void> {
   await pool.query(schema);
   await pool.query(seed);
-  console.log("Database initialized successfully.");
-  await pool.end();
+  console.log("Database schema & seed verified successfully.");
+  if (closePool) {
+    await pool.end();
+  }
 }
 
-main().catch(async (error) => {
-  console.error("Database initialization failed:", error);
-  await pool.end();
-  process.exit(1);
-});
+// Run directly if invoked via CLI: `npm run db:init`
+if (process.argv[1] && (process.argv[1].endsWith("init.ts") || process.argv[1].endsWith("init.js"))) {
+  initDatabase(true).catch(async (error) => {
+    console.error("Database initialization failed:", error);
+    await pool.end();
+    process.exit(1);
+  });
+}

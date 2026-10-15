@@ -2624,6 +2624,11 @@
       max-height: calc(100vh - 40px);
     }
 
+    .decisions-modal-dialog {
+      width: min(840px, 95vw);
+      max-height: calc(100vh - 40px);
+    }
+
     .settings-tabs {
       display: flex;
       gap: 6px;
@@ -3197,6 +3202,23 @@
       </button>
     </div>
 
+    <!-- Decisions Document Button in Sidebar (Section 04 Deliverable 03) -->
+    <div class="side-block" style="margin-top: 3px;">
+      <button id="sidebarDecisionsBtn" class="side-settings-btn" type="button" title="صفحة القرارات الهندسية وحساب التكاليف (DECISIONS.md)">
+        <div class="side-btn-inner">
+          <svg class="icon-svg" viewBox="0 0 24 24" style="color:#10b981;">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10 9 9 9 8 9"/>
+          </svg>
+          <span data-i18n="decisionsTitle">صفحة القرارات</span>
+        </div>
+        <span class="side-btn-badge" style="background: rgba(16, 185, 129, 0.2); color: #10b981; font-weight:800;">DECISIONS</span>
+      </button>
+    </div>
+
     <div class="footer">
       <span>AI Engineering Assessment Task</span>
       <div class="creator-tag">Made by Mahmoud Abd El-Ghaffar</div>
@@ -3581,6 +3603,205 @@
   </div>
 </div>
 
+<!-- Engineering Decisions & Cost Breakdown Modal (Section 04 Deliverable 03) -->
+<div id="decisionsModal" class="modal-overlay">
+  <div class="modal-dialog decisions-modal-dialog">
+    <div class="modal-header">
+      <h3>
+        <svg class="icon-svg" viewBox="0 0 24 24" style="color:#10b981;">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+        </svg>
+        <span data-i18n="decisionsModalTitle">صفحة القرارات الهندسية وحساب التكاليف (DECISIONS.md)</span>
+      </h3>
+      <button id="decisionsModalCloseBtn" class="modal-close-btn" type="button">&times;</button>
+    </div>
+
+    <!-- Decisions Tabs -->
+    <div class="settings-tabs">
+      <button class="settings-tab-btn active" data-dectab="dectabWhy" type="button">
+        <svg class="icon-svg" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+        <span>1. لماذا هذه الأدوات؟</span>
+      </button>
+      <button class="settings-tab-btn" data-dectab="dectabCost" type="button">
+        <svg class="icon-svg" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        <span>2. التكلفة (100 موظف)</span>
+      </button>
+      <button class="settings-tab-btn" data-dectab="dectabWeek" type="button">
+        <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+        <span>3. أسبوع إضافي للتطوير</span>
+      </button>
+      <button class="settings-tab-btn" data-dectab="dectabAssump" type="button">
+        <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span>4. الأمان والافتراضات</span>
+      </button>
+    </div>
+
+    <div class="modal-body settings-modal-body" style="max-height: 60vh; overflow-y: auto;">
+      <!-- TAB 1: Why these tools -->
+      <div id="dectabWhy" class="settings-tab-pane active">
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div class="instruction-card">
+            <h4><svg class="icon-svg" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg> <span>TypeScript & Node.js</span></h4>
+            <ul class="instruction-points">
+              <li><strong>أمان الأنواع الصارم (Strict Type Safety):</strong> الصلاحيات وأدوار الموظفين وتراكيب مخرجات الـ LLM محددة بعقود قوية تمنع أخطاء Runtime تماماً.</li>
+              <li><strong>التعامل مع التزامن العالي:</strong> معمارية الـ Event Loop مثالية للتعامل مع استدعاءات API والعمليات غير المتزامنة لـ PostgreSQL.</li>
+            </ul>
+          </div>
+          <div class="instruction-card">
+            <h4><svg class="icon-svg" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg> <span>قاعدة بيانات PostgreSQL (Aiven Cloud)</span></h4>
+            <ul class="instruction-points">
+              <li><strong>قاعدة بيانات علائقية متوافقة مع الإنتاج:</strong> دعم ACID الكامل، المفاتيح الخارجية، والـ Connection Pooling المنضبط.</li>
+              <li><strong>فصل حقيقي للصلاحيات:</strong> جدول تدقيق أمني `audit_logs` يسجل كل العمليات والمحاولات المحظورة.</li>
+            </ul>
+          </div>
+          <div class="instruction-card">
+            <h4><svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> <span>معالجة التوقيت: Luxon (Asia/Riyadh)</span></h4>
+            <ul class="instruction-points">
+              <li><strong>توقيت رسمي مستقل عن السيرفر:</strong> حساب توقيت الرياض بشكل حتمي مع ترحيل الجمعة للسبت (وفق الشرط R4).</li>
+              <li><strong>فهم التواريخ النسبية:</strong> معالجة "بكرة"، "بعد بكرة"، "الأحد الجاي"، "بعد 3 أيام"، "العصر"، و"الظهر".</li>
+            </ul>
+          </div>
+          <div class="instruction-card">
+            <h4><svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> <span>عزل الصلاحيات وحماية Prompt Injection (T08)</span></h4>
+            <ul class="instruction-points">
+              <li><strong>الشرط الأساسي في التقييم (R3):</strong> لا يملك الذكاء الاصطناعي أي سلطة تنفيذية. دوره فقط استخراج البيانات الدلالية كـ JSON، بينما الصلاحيات تُقرأ من قاعدة البيانات برمجياً وتُحسم في الباك إند حصرياً.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: Cost Calculation -->
+      <div id="dectabCost" class="settings-tab-pane">
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div class="instruction-card" style="border-inline-start-color: #10b981;">
+            <h4><svg class="icon-svg" viewBox="0 0 24 24" style="color:#10b981;"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> <span>افتراضات حجم العمل (لـ 100 موظف بمعدل 20 رسالة يومياً)</span></h4>
+            <ul class="instruction-points">
+              <li><strong>إجمالي الرسائل اليومية:</strong> 100 موظف × 20 رسالة = <strong>2,000 رسالة / يوم</strong>.</li>
+              <li><strong>إجمالي الرسائل الشهرية:</strong> 2,000 × 30 يوماً = <strong>60,000 رسالة / شهر</strong>.</li>
+              <li><strong>متوسط التوكنز للرسالة:</strong> 350 Input tokens + 80 Output tokens.</li>
+              <li><strong>إجمالي التوكنز شهرياً:</strong> 21,000,000 Input tokens (21M) + 4,800,000 Output tokens (4.8M).</li>
+            </ul>
+          </div>
+
+          <div style="overflow-x:auto;">
+            <table style="width:100%; border-collapse:collapse; font-size:11.5px; text-align:right;">
+              <thead>
+                <tr style="background:var(--panel2); border-bottom:1.5px solid var(--line);">
+                  <th style="padding:8px 10px;">الخدمة / المكون</th>
+                  <th style="padding:8px 10px;">النموذج / المواصفات</th>
+                  <th style="padding:8px 10px;">التكلفة بالدولار</th>
+                  <th style="padding:8px 10px;">التكلفة بالريال</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="border-bottom:1px solid var(--line);">
+                  <td style="padding:8px 10px; font-weight:700;">ذكاء اصطناعي (OpenAI)</td>
+                  <td style="padding:8px 10px;">GPT-4o-mini ($0.15/$0.60 per M)</td>
+                  <td style="padding:8px 10px;">$6.03 / شهر</td>
+                  <td style="padding:8px 10px;">~22.6 ر.س</td>
+                </tr>
+                <tr style="border-bottom:1px solid var(--line);">
+                  <td style="padding:8px 10px; font-weight:700;">ذكاء اصطناعي (Google)</td>
+                  <td style="padding:8px 10px;">Gemini 2.0 Flash ($0.10/$0.40 per M)</td>
+                  <td style="padding:8px 10px;">$4.02 / شهر</td>
+                  <td style="padding:8px 10px;">~15.0 ر.س</td>
+                </tr>
+                <tr style="border-bottom:1px solid var(--line);">
+                  <td style="padding:8px 10px; font-weight:700;">توجيه هجين (Hybrid Bypass)</td>
+                  <td style="padding:8px 10px;">توجيه 30% من الأسئلة المتكررة محلياً</td>
+                  <td style="padding:8px 10px;">$2.80 - $4.20</td>
+                  <td style="padding:8px 10px;">~11 - 16 ر.س</td>
+                </tr>
+                <tr style="border-bottom:1px solid var(--line);">
+                  <td style="padding:8px 10px; font-weight:700;">قاعدة بيانات سحابية</td>
+                  <td style="padding:8px 10px;">PostgreSQL مدارة (Aiven/Supabase)</td>
+                  <td style="padding:8px 10px;">$0.00 - $15.00</td>
+                  <td style="padding:8px 10px;">~0 - 56 ر.س</td>
+                </tr>
+                <tr style="border-bottom:1px solid var(--line);">
+                  <td style="padding:8px 10px; font-weight:700;">استضافة السيرفر</td>
+                  <td style="padding:8px 10px;">Render / Fly.io / AWS App Runner</td>
+                  <td style="padding:8px 10px;">$5.00 - $7.00</td>
+                  <td style="padding:8px 10px;">~19 - 26 ر.س</td>
+                </tr>
+                <tr style="background:rgba(16, 185, 129, 0.08); font-weight:800;">
+                  <td style="padding:8px 10px; color:#10b981;">الإجمالي الكلي (TCO)</td>
+                  <td style="padding:8px 10px;">شامل الاستضافة والـ LLM وقاعدة البيانات</td>
+                  <td style="padding:8px 10px; color:#10b981;">$9.50 - $28.00 / شهر</td>
+                  <td style="padding:8px 10px; color:#10b981;">~36 - 105 ر.س / شهر</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="settings-hint" style="color:var(--text); font-weight:600;">
+            💡 <strong>الخلاصة:</strong> التكلفة التقديرية لكل موظف شهرياً لا تتعدى <strong>$0.10 إلى $0.28 (أقل من ريال سعودي واحد للموظف شهرياً)</strong>.
+          </p>
+        </div>
+      </div>
+
+      <!-- TAB 3: Extra Week Roadmap -->
+      <div id="dectabWeek" class="settings-tab-pane">
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div class="instruction-card">
+            <h4><svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg> <span>1. ربط رسمي مع WhatsApp Cloud API والملاحظات الصوتية</span></h4>
+            <ul class="instruction-points">
+              <li>استقبال الرسائل عبر Webhook موثق ومعالجة رقم جوال الموظف لمطابقته بـ `user_id`.</li>
+              <li>دعم الرسائل الصوتية (Voice Notes) بتحويل الصوت إلى نص عبر Whisper API.</li>
+            </ul>
+          </div>
+          <div class="instruction-card">
+            <h4><svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> <span>2. تطبيق Row-Level Security (RLS) في PostgreSQL</span></h4>
+            <ul class="instruction-points">
+              <li>تطبيق سياسات الصلاحيات في عمق محرك قاعدة البيانات نفسه لضمان حماية مضاعفة (Defense in Depth).</li>
+            </ul>
+          </div>
+          <div class="instruction-card">
+            <h4><svg class="icon-svg" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> <span>3. استرجاع دقيق للسياسات عبر pgvector (Hybrid RAG)</span></h4>
+            <ul class="instruction-points">
+              <li>تضمين لوائح وسياسات الشركات الضخمة واسترجاع أرقام الفقرات بدقة مطلقة دون أدنى هلوسة.</li>
+            </ul>
+          </div>
+          <div class="instruction-card">
+            <h4><svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> <span>4. منع التكرار وإدارة التدفق (Idempotency & Rate Limiting)</span></h4>
+            <ul class="instruction-points">
+              <li>تطبيق مفاتيح عدم التكرار `Idempotency-Key` وقيود تدفق الطلبات عبر Redis لمنع الإغراق وتكرار المهام عند إعادة المحاولة.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: Assumptions & Grounding -->
+      <div id="dectabAssump" class="settings-tab-pane">
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div class="instruction-card">
+            <h4><svg class="icon-svg" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> <span>افتراضات التصميم الهندسي:</span></h4>
+            <ul class="instruction-points">
+              <li><strong>البيانات وهمية بالكامل:</strong> البيانات لغرض التقييم فقط.</li>
+              <li><strong>تاريخ اليوم هو تاريخ التشغيل:</strong> يعتمد النظام التوقيت الحي لمنطقة الرياض `Asia/Riyadh`.</li>
+              <li><strong>قاعدة الجمعة (R4):</strong> إذا صادف الموعد يوم جمعة، يُرحّل تلقائياً إلى السبت بنفس التوقيت مع توضيح صريح في الرد.</li>
+              <li><strong>الإجابة من النص فقط (R5):</strong> إذا لم تكن المعلومة متوفرة في السياسة (مثل بدل السكن في T07)، يعترف النظام بغيابها فوراً دون أي تخمين أو تأليف.</li>
+              <li><strong>فحص الصلاحيات الحتمي (R3):</strong> لا يُعتمد أبداً على إدعاء المستخدم لدوره داخل الرسالة (إحباط هجوم T08 التام).</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer settings-modal-footer">
+      <button id="copyDecisionsMarkdownBtn" class="icon-btn" type="button">
+        <svg class="icon-svg" viewBox="0 0 24 24" style="width:12px;height:12px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <span data-i18n="copyDecisions">نسخ مستند القرارات كاملاً (DECISIONS.md)</span>
+      </button>
+      <button id="closeDecisionsModalBtn" class="save-settings-btn" type="button">
+        <span data-i18n="close">إغلاق</span>
+      </button>
+    </div>
+  </div>
+</div>
+
 <script>
 // Employee Directory Seed Data
 const employees = [
@@ -3776,6 +3997,10 @@ const i18n = {
     copied: "تم نسخ النص إلى الحافظة بنجاح",
     settingsTitle: "الإعدادات",
     settingsModalTitle: "إعدادات وتخصيص النظام",
+    decisionsTitle: "صفحة القرارات",
+    decisionsModalTitle: "صفحة القرارات الهندسية وحساب التكاليف (DECISIONS.md)",
+    copyDecisions: "نسخ مستند القرارات كاملاً",
+    close: "إغلاق",
     tabModel: "نموذج الذكاء الاصطناعي",
     tabInstructions: "التعليمات والسياسات",
     tabPrompt: "موجه النظام (Prompt)",
@@ -3859,6 +4084,10 @@ const i18n = {
     copied: "Copied to clipboard successfully",
     settingsTitle: "Settings",
     settingsModalTitle: "System Settings & Customization",
+    decisionsTitle: "Decisions Page",
+    decisionsModalTitle: "Engineering Decisions & Cost Analysis (DECISIONS.md)",
+    copyDecisions: "Copy Full Decisions Document",
+    close: "Close",
     tabModel: "AI Model",
     tabInstructions: "Instructions & Policy",
     tabPrompt: "System Prompt",
@@ -4849,26 +5078,17 @@ document.querySelectorAll('input[name="aiModelChoice"]').forEach(r => {
   };
 });
 
-// Settings Tabs Switching
-document.querySelectorAll(".settings-tab-btn").forEach(btn => {
+// Settings Tabs Switching (Scoped to #settingsModal)
+document.querySelectorAll("#settingsModal .settings-tab-btn").forEach(btn => {
   btn.onclick = () => {
     playSound("click");
-    document.querySelectorAll(".settings-tab-btn").forEach(b => b.classList.remove("active"));
-    document.querySelectorAll(".settings-tab-pane").forEach(p => p.classList.remove("active"));
+    document.querySelectorAll("#settingsModal .settings-tab-btn").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll("#settingsModal .settings-tab-pane").forEach(p => p.classList.remove("active"));
     btn.classList.add("active");
     const target = $(btn.dataset.tab);
     if (target) target.classList.add("active");
   };
 });
-
-// Reset Policy to Default
-if ($("resetPolicyBtn")) {
-  $("resetPolicyBtn").onclick = () => {
-    playSound("click");
-    $("policyEditorTextarea").value = defaultPolicyText;
-    showToast(lang === "ar" ? "تمت استعادة نص السياسة الافتراضي" : "Policy reset to default", "check");
-  };
-}
 
 // Reset Policy to Default
 if ($("resetPolicyBtn")) {
@@ -4994,6 +5214,69 @@ if ($("saveSettingsBtn")) {
 // Update model badge on startup
 if ($("activeModelBadge")) {
   $("activeModelBadge").textContent = activeModel.split("/").pop();
+}
+
+// ============================================================
+// DECISIONS MODAL LOGIC (صفحة القرارات الهندسية)
+// ============================================================
+const decisionsModal = $("decisionsModal");
+
+function openDecisionsModal() {
+  playSound("click");
+  if (decisionsModal) decisionsModal.classList.add("open");
+}
+
+function closeDecisionsModal() {
+  playSound("click");
+  if (decisionsModal) decisionsModal.classList.remove("open");
+}
+
+if ($("sidebarDecisionsBtn")) {
+  $("sidebarDecisionsBtn").onclick = openDecisionsModal;
+}
+if ($("decisionsModalCloseBtn")) {
+  $("decisionsModalCloseBtn").onclick = closeDecisionsModal;
+}
+if ($("closeDecisionsModalBtn")) {
+  $("closeDecisionsModalBtn").onclick = closeDecisionsModal;
+}
+if (decisionsModal) {
+  decisionsModal.onclick = (e) => {
+    if (e.target === decisionsModal) closeDecisionsModal();
+  };
+}
+
+// Decisions Tabs Switching (Scoped to #decisionsModal)
+document.querySelectorAll("#decisionsModal .settings-tab-btn").forEach(btn => {
+  btn.onclick = () => {
+    playSound("click");
+    document.querySelectorAll("#decisionsModal .settings-tab-btn").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll("#decisionsModal .settings-tab-pane").forEach(p => p.classList.remove("active"));
+    btn.classList.add("active");
+    const target = $(btn.dataset.dectab);
+    if (target) target.classList.add("active");
+  };
+});
+
+// Copy Full Decisions Document (DECISIONS.md) to Clipboard
+if ($("copyDecisionsMarkdownBtn")) {
+  $("copyDecisionsMarkdownBtn").onclick = async () => {
+    playSound("click");
+    try {
+      const res = await fetch("/api/decisions");
+      const data = await res.json();
+      if (data && data.markdown) {
+        await navigator.clipboard.writeText(data.markdown);
+        playSound("success");
+        showToast(lang === "ar" ? "تم نسخ مستند القرارات (DECISIONS.md) بالكامل!" : "Decisions document (DECISIONS.md) copied to clipboard!", "check");
+      } else {
+        throw new Error("Empty response");
+      }
+    } catch (e) {
+      console.error("Could not fetch DECISIONS.md:", e);
+      showToast(lang === "ar" ? "تعذر نسخ مستند القرارات" : "Failed to copy decisions document", "warning");
+    }
+  };
 }
 
 // Initial Setup

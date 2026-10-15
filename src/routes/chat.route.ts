@@ -356,4 +356,21 @@ router.post("/api/test-parse", async (req, res) => {
   }
 });
 
+router.get("/api/decisions", async (_req, res) => {
+  try {
+    const { readFile } = await import("node:fs/promises");
+    const { fileURLToPath } = await import("node:url");
+    const path = await import("node:path");
+
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+    const filePath = path.resolve(__dirname, "../../DECISIONS.md");
+
+    const content = await readFile(filePath, "utf-8");
+    return res.json({ ok: true, markdown: content });
+  } catch (error) {
+    return res.status(500).json({ ok: false, error: (error as Error).message });
+  }
+});
+
 export default router;
