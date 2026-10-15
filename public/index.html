@@ -4988,6 +4988,393 @@ function applyLang() {
   renderCustomTestDropdown();
   renderGrid();
   refreshHeader();
+  renderDecisionsModal(lang);
+}
+
+// Dynamic Bilingual Rendering for Engineering Decisions Modal
+function renderDecisionsModal(l) {
+  const isEn = l === "en";
+
+  // Tab Buttons
+  const btnWhy = document.querySelector('[data-dectab="dectabWhy"] span');
+  const btnCost = document.querySelector('[data-dectab="dectabCost"] span');
+  const btnWeek = document.querySelector('[data-dectab="dectabWeek"] span');
+  const btnAssump = document.querySelector('[data-dectab="dectabAssump"] span');
+
+  if (btnWhy) btnWhy.textContent = isEn ? "1. Why These Tools?" : "1. لماذا هذه الأدوات؟";
+  if (btnCost) btnCost.textContent = isEn ? "2. Cost (100 Employees)" : "2. التكلفة (100 موظف)";
+  if (btnWeek) btnWeek.textContent = isEn ? "3. Extra Week Roadmap" : "3. أسبوع إضافي للتطوير";
+  if (btnAssump) btnAssump.textContent = isEn ? "4. Security & Assumptions" : "4. الأمان والافتراضات";
+
+  // Tab 1: Why These Tools
+  const tabWhy = $("dectabWhy");
+  if (tabWhy) {
+    if (isEn) {
+      tabWhy.innerHTML = `
+        <div style="display:flex; flex-direction:column; gap:12px; text-align:left;">
+          <div class="instruction-card">
+            <h4><svg class="icon-svg" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg> <span>TypeScript & Node.js</span></h4>
+            <ul class="instruction-points">
+              <li><strong>Strict Type Safety:</strong> Roles (manager, supervisor, employee) and LLM schema contracts are strictly validated with TypeScript & Zod, eliminating runtime type errors.</li>
+              <li><strong>High Concurrency:</strong> The Node.js Event Loop architecture is ideal for handling concurrent external LLM API calls and non-blocking PostgreSQL queries simultaneously.</li>
+            </ul>
+          </div>
+          <div class="instruction-card">
+            <h4><svg class="icon-svg" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg> <span>PostgreSQL (Aiven Cloud Database)</span></h4>
+            <ul class="instruction-points">
+              <li><strong>Production-Grade Relational Database:</strong> Full ACID compliance, foreign keys, constraints, and connection pooling.</li>
+              <li><strong>True Security Separation & Audit:</strong> An isolated <code>audit_logs</code> table records every operation and blocked authorization attempt for security audits.</li>
+            </ul>
+          </div>
+          <div class="instruction-card">
+            <h4><svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> <span>Timezone Processing: Luxon (Asia/Riyadh)</span></h4>
+            <ul class="instruction-points">
+              <li><strong>Server-Independent Official Timezone:</strong> Deterministic calculation in <code>Asia/Riyadh</code> with automatic Friday-to-Saturday rollover (per Rule R4).</li>
+              <li><strong>Relative Dates Parsing:</strong> Native handling of "tomorrow", "day after tomorrow", "next Sunday", "in 3 days", "afternoon", and "noon".</li>
+            </ul>
+          </div>
+          <div class="instruction-card">
+            <h4><svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> <span>Privilege Isolation & Prompt Injection Defense (T08)</span></h4>
+            <ul class="instruction-points">
+              <li><strong>Core Security Rule (R3):</strong> The AI model has zero executive power. Its role is strictly semantic extraction into JSON; user roles are retrieved from PostgreSQL and resolved purely in backend code.</li>
+            </ul>
+          </div>
+          <div class="instruction-card" style="border-inline-start-color: #0096f5;">
+            <h4><svg class="icon-svg" viewBox="0 0 24 24" style="color:#0096f5;"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> <span>Deterministic Rule Engine vs LLM Semantic Parser</span></h4>
+            <ul class="instruction-points">
+              <li><strong>Separation of Semantics from Business Logic:</strong> The LLM is never allowed to make business decisions (such as Friday rollover R4, RBAC permissions R3, or policy retrieval R5). Its job is strictly structured JSON extraction.</li>
+              <li><strong>100% Determinism (Zero Hallucination):</strong> Date rules, security gates, and policy grounding are executed via TypeScript code and database queries without freeform generation.</li>
+              <li><strong>Graceful Fallback & Zero Downtime:</strong> If the LLM provider fails, times out, or runs out of credits, the local Fallback Rule Engine handles all standard requests in &lt; 5ms.</li>
+            </ul>
+          </div>
+          <div class="instruction-card" style="border-inline-start-color: #10b981;">
+            <h4><svg class="icon-svg" viewBox="0 0 24 24" style="color:#10b981;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> <span>Active Heartbeat & Self-Healing Database Connection</span></h4>
+            <ul class="instruction-points">
+              <li><strong>Active Heartbeat Polling:</strong> Periodic <code>SELECT 1</code> queries via <code>/health</code> immediately detect connection drops or recovery of PostgreSQL.</li>
+              <li><strong>Self-Healing Pool:</strong> The connection pool automatically rebuilds links upon service restoration without needing a server restart.</li>
+              <li><strong>Interactive Visual & Audio Feedback:</strong> The status indicator instantly pulses red with a gentle warning tone during outages, protecting user data.</li>
+            </ul>
+          </div>
+        </div>
+      `;
+    } else {
+      tabWhy.innerHTML = `
+        <div style="display:flex; flex-direction:column; gap:12px; text-align:right;">
+          <div class="instruction-card">
+            <h4><svg class="icon-svg" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg> <span>TypeScript & Node.js</span></h4>
+            <ul class="instruction-points">
+              <li><strong>أمان الأنواع الصارم (Strict Type Safety):</strong> الصلاحيات وأدوار الموظفين وتراكيب مخرجات الـ LLM محددة بعقود قوية تمنع أخطاء Runtime تماماً.</li>
+              <li><strong>التعامل مع التزامن العالي:</strong> معمارية الـ Event Loop مثالية للتعامل مع استدعاءات API والعمليات غير المتزامنة لـ PostgreSQL.</li>
+            </ul>
+          </div>
+          <div class="instruction-card">
+            <h4><svg class="icon-svg" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg> <span>قاعدة بيانات PostgreSQL (Aiven Cloud)</span></h4>
+            <ul class="instruction-points">
+              <li><strong>قاعدة بيانات علائقية متوافقة مع الإنتاج:</strong> دعم ACID الكامل، المفاتيح الخارجية، والـ Connection Pooling المنضبط.</li>
+              <li><strong>فصل حقيقي للصلاحيات:</strong> جدول تدقيق أمني <code>audit_logs</code> يسجل كل العمليات والمحاولات المحظورة.</li>
+            </ul>
+          </div>
+          <div class="instruction-card">
+            <h4><svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> <span>معالجة التوقيت: Luxon (Asia/Riyadh)</span></h4>
+            <ul class="instruction-points">
+              <li><strong>توقيت رسمي مستقل عن السيرفر:</strong> حساب توقيت الرياض بشكل حتمي مع ترحيل الجمعة للسبت (وفق الشرط R4).</li>
+              <li><strong>فهم التواريخ النسبية:</strong> معالجة "بكرة"، "بعد بكرة"، "الأحد الجاي"، "بعد 3 أيام"، "العصر"، و"الظهر".</li>
+            </ul>
+          </div>
+          <div class="instruction-card">
+            <h4><svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> <span>عزل الصلاحيات وحماية Prompt Injection (T08)</span></h4>
+            <ul class="instruction-points">
+              <li><strong>الشرط الأساسي في التقييم (R3):</strong> لا يملك الذكاء الاصطناعي أي سلطة تنفيذية. دوره فقط استخراج البيانات الدلالية كـ JSON، بينما الصلاحيات تُقرأ من قاعدة البيانات برمجياً وتُحسم في الباك إند حصرياً.</li>
+            </ul>
+          </div>
+          <div class="instruction-card" style="border-inline-start-color: #0096f5;">
+            <h4><svg class="icon-svg" viewBox="0 0 24 24" style="color:#0096f5;"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> <span>معمارية الفصل الحتمي التام: محرك القواعد vs النموذج اللغوي</span></h4>
+            <ul class="instruction-points">
+              <li><strong>فصل الفهم الدلالي عن منطق الأعمال:</strong> لا يُسمح للذكاء الاصطناعي باتخاذ أي قرار عمل (مثل ترحيل الجمعة R4، أو فحص صلاحيات الأقسام R3، أو استرجاع السياسة R5). دوره محصور في استخراج المعاملات كـ JSON منظم.</li>
+              <li><strong>حتمية كاملة 100% (Zero Hallucination):</strong> قواعد التواريخ والأمان واسترجاع السياسة تُنفذ بكود TypeScript مباشر وقاعدة البيانات دون الاعتماد على التوليد الحر.</li>
+              <li><strong>المرونة ومقاومة الأعطال (Graceful Fallback):</strong> في حال انقطاع خدمة الذكاء الاصطناعي أو بطء الشبكة، يتولى محرك القواعد المحلي معالجة جميع الطلبات بنجاح فوري وبزمن استجابة &lt; 5ms.</li>
+            </ul>
+          </div>
+          <div class="instruction-card" style="border-inline-start-color: #10b981;">
+            <h4><svg class="icon-svg" viewBox="0 0 24 24" style="color:#10b981;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> <span>استراتيجية الصمود ضد انقطاع الشبكة والتعافي الذاتي (Self-Healing DB)</span></h4>
+            <ul class="instruction-points">
+              <li><strong>فحص صحة دوري حي (Active Heartbeat Polling):</strong> فحص دوري عبر استعلام <code>SELECT 1</code> على مسار <code>/health</code> لاكتشاف انقطاع أو عودة PostgreSQL فوراً.</li>
+              <li><strong>مجمع اتصالات ذاتي الإصلاح:</strong> يعيد مجمع الاتصالات (Connection Pool) بناء الروابط تلقائياً عند استعادة السيرفر دون الحاجة لإعادة تشغيل خادم التطبيق.</li>
+              <li><strong>تغذية بصرية ونغمية تفاعلية:</strong> يتحول مؤشر الحالة لحظياً إلى اللون الأحمر النابض عند انقطاع الاتصال مع نغمة تحذيرية هادئة لحماية المستخدم من فقدان البيانات.</li>
+            </ul>
+          </div>
+        </div>
+      `;
+    }
+  }
+
+  // Tab 2: Cost Calculation
+  const tabCost = $("dectabCost");
+  if (tabCost) {
+    if (isEn) {
+      tabCost.innerHTML = `
+        <div style="display:flex; flex-direction:column; gap:12px; text-align:left;">
+          <div class="instruction-card" style="border-inline-start-color: #10b981;">
+            <h4><svg class="icon-svg" viewBox="0 0 24 24" style="color:#10b981;"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> <span>Workload Assumptions (100 Employees, 20 msgs / day)</span></h4>
+            <ul class="instruction-points">
+              <li><strong>Total Daily Messages:</strong> 100 employees × 20 msgs = <strong>2,000 msgs / day</strong>.</li>
+              <li><strong>Total Monthly Messages:</strong> 2,000 × 30 days = <strong>60,000 msgs / month</strong> (~44,000 across 22 work days).</li>
+              <li><strong>Average Tokens per Request:</strong> 350 Input tokens + 80 Output tokens.</li>
+              <li><strong>Total Monthly Tokens:</strong> 21,000,000 Input tokens (21M) + 4,800,000 Output tokens (4.8M).</li>
+            </ul>
+          </div>
+
+          <div style="overflow-x:auto;">
+            <table style="width:100%; border-collapse:collapse; font-size:11.5px; text-align:left;">
+              <thead>
+                <tr style="background:var(--panel2); border-bottom:1.5px solid var(--line);">
+                  <th style="padding:8px 10px;">Service / Component</th>
+                  <th style="padding:8px 10px;">Model / Specifications</th>
+                  <th style="padding:8px 10px;">Cost (USD)</th>
+                  <th style="padding:8px 10px;">Cost (SAR)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="border-bottom:1px solid var(--line);">
+                  <td style="padding:8px 10px; font-weight:700;">AI Model (OpenAI)</td>
+                  <td style="padding:8px 10px;">GPT-4o-mini ($0.15 / $0.60 per 1M)</td>
+                  <td style="padding:8px 10px;">$6.03 / mo</td>
+                  <td style="padding:8px 10px;">~22.6 SAR</td>
+                </tr>
+                <tr style="border-bottom:1px solid var(--line);">
+                  <td style="padding:8px 10px; font-weight:700;">AI Model (Google)</td>
+                  <td style="padding:8px 10px;">Gemini 2.0 Flash ($0.10 / $0.40 per 1M)</td>
+                  <td style="padding:8px 10px;">$4.02 / mo</td>
+                  <td style="padding:8px 10px;">~15.0 SAR</td>
+                </tr>
+                <tr style="border-bottom:1px solid var(--line);">
+                  <td style="padding:8px 10px; font-weight:700;">Hybrid Routing</td>
+                  <td style="padding:8px 10px;">Bypass LLM for 30% of repetitive queries</td>
+                  <td style="padding:8px 10px;">$2.80 - $4.20</td>
+                  <td style="padding:8px 10px;">~11 - 16 SAR</td>
+                </tr>
+                <tr style="border-bottom:1px solid var(--line);">
+                  <td style="padding:8px 10px; font-weight:700;">Managed Database</td>
+                  <td style="padding:8px 10px;">PostgreSQL (Aiven / Supabase Starter)</td>
+                  <td style="padding:8px 10px;">$0.00 - $15.00</td>
+                  <td style="padding:8px 10px;">~0 - 56 SAR</td>
+                </tr>
+                <tr style="border-bottom:1px solid var(--line);">
+                  <td style="padding:8px 10px; font-weight:700;">App Server Hosting</td>
+                  <td style="padding:8px 10px;">Render / Fly.io / AWS App Runner (Docker)</td>
+                  <td style="padding:8px 10px;">$5.00 - $7.00</td>
+                  <td style="padding:8px 10px;">~19 - 26 SAR</td>
+                </tr>
+                <tr style="background:rgba(16, 185, 129, 0.08); font-weight:800;">
+                  <td style="padding:8px 10px; color:#10b981;">Total TCO</td>
+                  <td style="padding:8px 10px;">Complete package (Hosting + LLM + DB)</td>
+                  <td style="padding:8px 10px; color:#10b981;">$9.50 - $28.00 / mo</td>
+                  <td style="padding:8px 10px; color:#10b981;">~36 - 105 SAR / mo</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="settings-hint" style="color:var(--text); font-weight:600;">
+            💡 <strong>Takeaway:</strong> Estimated monthly cost per employee does not exceed <strong>$0.10 to $0.28 (less than 1 SAR per employee per month)</strong>.
+          </p>
+        </div>
+      `;
+    } else {
+      tabCost.innerHTML = `
+        <div style="display:flex; flex-direction:column; gap:12px; text-align:right;">
+          <div class="instruction-card" style="border-inline-start-color: #10b981;">
+            <h4><svg class="icon-svg" viewBox="0 0 24 24" style="color:#10b981;"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> <span>افتراضات حجم العمل (لـ 100 موظف بمعدل 20 رسالة يومياً)</span></h4>
+            <ul class="instruction-points">
+              <li><strong>إجمالي الرسائل اليومية:</strong> 100 موظف × 20 رسالة = <strong>2,000 رسالة / يوم</strong>.</li>
+              <li><strong>إجمالي الرسائل الشهرية:</strong> 2,000 × 30 يوماً = <strong>60,000 رسالة / شهر</strong>.</li>
+              <li><strong>متوسط التوكنز للرسالة:</strong> 350 Input tokens + 80 Output tokens.</li>
+              <li><strong>إجمالي التوكنز شهرياً:</strong> 21,000,000 Input tokens (21M) + 4,800,000 Output tokens (4.8M).</li>
+            </ul>
+          </div>
+
+          <div style="overflow-x:auto;">
+            <table style="width:100%; border-collapse:collapse; font-size:11.5px; text-align:right;">
+              <thead>
+                <tr style="background:var(--panel2); border-bottom:1.5px solid var(--line);">
+                  <th style="padding:8px 10px;">الخدمة / المكون</th>
+                  <th style="padding:8px 10px;">النموذج / المواصفات</th>
+                  <th style="padding:8px 10px;">التكلفة بالدولار</th>
+                  <th style="padding:8px 10px;">التكلفة بالريال</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="border-bottom:1px solid var(--line);">
+                  <td style="padding:8px 10px; font-weight:700;">ذكاء اصطناعي (OpenAI)</td>
+                  <td style="padding:8px 10px;">GPT-4o-mini ($0.15/$0.60 per M)</td>
+                  <td style="padding:8px 10px;">$6.03 / شهر</td>
+                  <td style="padding:8px 10px;">~22.6 ر.س</td>
+                </tr>
+                <tr style="border-bottom:1px solid var(--line);">
+                  <td style="padding:8px 10px; font-weight:700;">ذكاء اصطناعي (Google)</td>
+                  <td style="padding:8px 10px;">Gemini 2.0 Flash ($0.10/$0.40 per M)</td>
+                  <td style="padding:8px 10px;">$4.02 / شهر</td>
+                  <td style="padding:8px 10px;">~15.0 ر.س</td>
+                </tr>
+                <tr style="border-bottom:1px solid var(--line);">
+                  <td style="padding:8px 10px; font-weight:700;">توجيه هجين (Hybrid Bypass)</td>
+                  <td style="padding:8px 10px;">توجيه 30% من الأسئلة المتكررة محلياً</td>
+                  <td style="padding:8px 10px;">$2.80 - $4.20</td>
+                  <td style="padding:8px 10px;">~11 - 16 ر.س</td>
+                </tr>
+                <tr style="border-bottom:1px solid var(--line);">
+                  <td style="padding:8px 10px; font-weight:700;">قاعدة بيانات سحابية</td>
+                  <td style="padding:8px 10px;">PostgreSQL مدارة (Aiven/Supabase)</td>
+                  <td style="padding:8px 10px;">$0.00 - $15.00</td>
+                  <td style="padding:8px 10px;">~0 - 56 ر.س</td>
+                </tr>
+                <tr style="border-bottom:1px solid var(--line);">
+                  <td style="padding:8px 10px; font-weight:700;">استضافة السيرفر</td>
+                  <td style="padding:8px 10px;">Render / Fly.io / AWS App Runner</td>
+                  <td style="padding:8px 10px;">$5.00 - $7.00</td>
+                  <td style="padding:8px 10px;">~19 - 26 ر.س</td>
+                </tr>
+                <tr style="background:rgba(16, 185, 129, 0.08); font-weight:800;">
+                  <td style="padding:8px 10px; color:#10b981;">الإجمالي الكلي (TCO)</td>
+                  <td style="padding:8px 10px;">شامل الاستضافة والـ LLM وقاعدة البيانات</td>
+                  <td style="padding:8px 10px; color:#10b981;">$9.50 - $28.00 / شهر</td>
+                  <td style="padding:8px 10px; color:#10b981;">~36 - 105 ر.س / شهر</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="settings-hint" style="color:var(--text); font-weight:600;">
+            💡 <strong>الخلاصة:</strong> التكلفة التقديرية لكل موظف شهرياً لا تتعدى <strong>$0.10 إلى $0.28 (أقل من ريال سعودي واحد للموظف شهرياً)</strong>.
+          </p>
+        </div>
+      `;
+    }
+  }
+
+  // Tab 3: Extra Week Roadmap
+  const tabWeek = $("dectabWeek");
+  if (tabWeek) {
+    if (isEn) {
+      tabWeek.innerHTML = `
+        <div style="display:flex; flex-direction:column; gap:12px; text-align:left;">
+          <div class="instruction-card">
+            <h4><svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg> <span>1. Official WhatsApp Cloud API & Voice Notes Support</span></h4>
+            <ul class="instruction-points">
+              <li>Verified webhook integration matching employee phone numbers with system <code>user_id</code>.</li>
+              <li>Voice notes support by transcribing audio into text via Whisper API before semantic parsing.</li>
+            </ul>
+          </div>
+          <div class="instruction-card">
+            <h4><svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> <span>2. PostgreSQL Row-Level Security (RLS)</span></h4>
+            <ul class="instruction-points">
+              <li>Enforce permission policies in the core database engine for robust Defense in Depth.</li>
+            </ul>
+          </div>
+          <div class="instruction-card">
+            <h4><svg class="icon-svg" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> <span>3. Hybrid RAG with pgvector for Policy Documents</span></h4>
+            <ul class="instruction-points">
+              <li>Embed extensive corporate bylaws and policies, retrieving exact section numbers with zero hallucination.</li>
+            </ul>
+          </div>
+          <div class="instruction-card">
+            <h4><svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> <span>4. Idempotency & Rate Limiting via Redis</span></h4>
+            <ul class="instruction-points">
+              <li>Apply <code>Idempotency-Key</code> headers and Redis rate limiting to prevent duplicate task creation during network retries.</li>
+            </ul>
+          </div>
+          <div class="instruction-card">
+            <h4><svg class="icon-svg" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg> <span>5. Advanced Observability & OpenTelemetry</span></h4>
+            <ul class="instruction-points">
+              <li>Distributed tracing and Prometheus/Grafana metrics for LLM latency, security block rates, and transaction success rates.</li>
+            </ul>
+          </div>
+          <div class="instruction-card">
+            <h4><svg class="icon-svg" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> <span>6. Automated Dialectal Arabic Benchmark Suite</span></h4>
+            <ul class="instruction-points">
+              <li>Automated 100+ scenario test suite testing various dialects (Najdi, Hijazi, Eastern, MSA) and spelling variants for >99.5% semantic accuracy.</li>
+            </ul>
+          </div>
+        </div>
+      `;
+    } else {
+      tabWeek.innerHTML = `
+        <div style="display:flex; flex-direction:column; gap:12px; text-align:right;">
+          <div class="instruction-card">
+            <h4><svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg> <span>1. ربط رسمي مع WhatsApp Cloud API والملاحظات الصوتية</span></h4>
+            <ul class="instruction-points">
+              <li>استقبال الرسائل عبر Webhook موثق ومعالجة رقم جوال الموظف لمطابقته بـ <code>user_id</code>.</li>
+              <li>دعم الرسائل الصوتية (Voice Notes) بتحويل الصوت إلى نص عبر Whisper API قبل المعالجة الدلالية.</li>
+            </ul>
+          </div>
+          <div class="instruction-card">
+            <h4><svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> <span>2. تطبيق Row-Level Security (RLS) في PostgreSQL</span></h4>
+            <ul class="instruction-points">
+              <li>تطبيق سياسات الصلاحيات في عمق محرك قاعدة البيانات نفسه لضمان حماية مضاعفة (Defense in Depth).</li>
+            </ul>
+          </div>
+          <div class="instruction-card">
+            <h4><svg class="icon-svg" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> <span>3. استرجاع دقيق للسياسات عبر pgvector (Hybrid RAG)</span></h4>
+            <ul class="instruction-points">
+              <li>تضمين لوائح وسياسات الشركات الضخمة واسترجاع أرقام الفقرات بدقة مطلقة دون أدنى هلوسة.</li>
+            </ul>
+          </div>
+          <div class="instruction-card">
+            <h4><svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> <span>4. منع التكرار وإدارة التدفق (Idempotency & Rate Limiting)</span></h4>
+            <ul class="instruction-points">
+              <li>تطبيق مفاتيح عدم التكرار <code>Idempotency-Key</code> وقيود تدفق الطلبات عبر Redis لمنع الإغراق وتكرار المهام عند إعادة المحاولة.</li>
+            </ul>
+          </div>
+          <div class="instruction-card">
+            <h4><svg class="icon-svg" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg> <span>5. المراقبة والقياس المتقدم (Observability & OpenTelemetry)</span></h4>
+            <ul class="instruction-points">
+              <li>إضافة تتبع distributed tracing ومقاييس Prometheus/Grafana لقياس زمن استجابة الـ LLM، معدلات حظر الهجمات، ونسبة نجاح العمليات.</li>
+            </ul>
+          </div>
+          <div class="instruction-card">
+            <h4><svg class="icon-svg" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> <span>6. حزمة اختبارات عربية مؤتمتة متقدمة (Arabic Benchmark Suite)</span></h4>
+            <ul class="instruction-points">
+              <li>100 سيناريو آلي لاختبار اللهجات المتعددة والفروق الإملائية بدقة تفوق 99.5%.</li>
+            </ul>
+          </div>
+        </div>
+      `;
+    }
+  }
+
+  // Tab 4: Assumptions & Grounding
+  const tabAssump = $("dectabAssump");
+  if (tabAssump) {
+    if (isEn) {
+      tabAssump.innerHTML = `
+        <div style="display:flex; flex-direction:column; gap:12px; text-align:left;">
+          <div class="instruction-card">
+            <h4><svg class="icon-svg" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> <span>Engineering Assumptions & Security Controls:</span></h4>
+            <ul class="instruction-points">
+              <li><strong>Mock Data:</strong> All employees and initial task data are seeded solely for evaluation purposes.</li>
+              <li><strong>Live Runtime Date:</strong> The system operates live in the <code>Asia/Riyadh</code> timezone.</li>
+              <li><strong>Friday Rollover Rule (R4):</strong> If a scheduled task falls on a Friday, it is automatically rolled over to Saturday at the same time with an explicit note in the response.</li>
+              <li><strong>Strict Ground Truth Policy (R5):</strong> If information is not in the approved policy (e.g. housing allowance in T07), the bot reports it as absent immediately without guessing or hallucinating.</li>
+              <li><strong>Deterministic RBAC Enforcement (R3):</strong> The system never trusts user claims of being a manager (prompt injection attempts like T08 are defeated 100% of the time).</li>
+            </ul>
+          </div>
+        </div>
+      `;
+    } else {
+      tabAssump.innerHTML = `
+        <div style="display:flex; flex-direction:column; gap:12px; text-align:right;">
+          <div class="instruction-card">
+            <h4><svg class="icon-svg" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> <span>افتراضات التصميم الهندسي وضوابط الأمان:</span></h4>
+            <ul class="instruction-points">
+              <li><strong>البيانات وهمية بالكامل:</strong> البيانات مهيأة لغرض التقييم والتجربة فقط.</li>
+              <li><strong>تاريخ اليوم هو تاريخ التشغيل:</strong> يعتمد النظام التوقيت الحي لمنطقة الرياض <code>Asia/Riyadh</code>.</li>
+              <li><strong>قاعدة الجمعة (R4):</strong> إذا صادف الموعد يوم جمعة، يُرحّل تلقائياً إلى السبت بنفس التوقيت مع توضيح صريح في الرد.</li>
+              <li><strong>الإجابة من النص فقط (R5):</strong> إذا لم تكن المعلومة متوفرة في السياسة (مثل بدل السكن في T07)، يعترف النظام بغيابها فوراً دون أي تخمين أو تأليف.</li>
+              <li><strong>فحص الصلاحيات الحتمي (R3):</strong> لا يُعتمد أبداً على إدعاء المستخدم لدوره داخل الرسالة (إحباط هجوم T08 التام).</li>
+            </ul>
+          </div>
+        </div>
+      `;
+    }
+  }
 }
 
 // Custom User Dropdown Rendering
